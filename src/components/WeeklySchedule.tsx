@@ -15,7 +15,9 @@ import {
   Sparkles, 
   Hammer, 
   HelpCircle,
-  Clapperboard
+  Clapperboard,
+  Smile,
+  Handshake
 } from 'lucide-react';
 
 const DAYS: DayOfWeek[] = ['월', '화', '수', '목', '금'];
@@ -43,6 +45,9 @@ const getSubjectIcon = (name: string) => {
   if (name.includes('음악')) return <Music size={16} />;
   if (name.includes('도덕')) return <Heart size={16} />;
   if (name.includes('실과')) return <Hammer size={16} />;
+  if (name.includes('슬기로운')) return <Smile size={16} />;
+  if (name.includes('바른생활')) return <Handshake size={16} />;
+  if (name.includes('자율') || name.includes('자치')) return <Sparkles size={16} />;
   if (name.includes('창체') || name.includes('창의')) return <Sparkles size={16} />;
   if (name.includes('컴퓨터') || name.includes('코딩')) return <Calculator size={16} />;
   if (name.includes('방송')) return <Clapperboard size={16} />;

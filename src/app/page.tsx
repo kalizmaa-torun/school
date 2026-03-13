@@ -89,13 +89,15 @@ export default function Home() {
 
   return (
     <div className="space-y-6">
-      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-end gap-4">
-        <div>
+      <div className="grid grid-cols-1 lg:grid-cols-4 gap-6 items-end">
+        <div className="lg:col-span-3">
           <h1 className="text-2xl font-bold text-[var(--foreground)] tracking-tight">안녕하세요, 반가워요 👋</h1>
           <p className="text-slate-500 dark:text-slate-400 mt-1">오늘의 스케줄과 주간 시간표, 과제를 확인하세요.</p>
         </div>
-        <div className="text-sm font-bold px-5 py-2.5 bg-blue-100 dark:bg-blue-500/20 text-blue-700 dark:text-blue-300 rounded-xl shadow-sm border border-blue-200 dark:border-blue-500/30 whitespace-nowrap">
-          {now.toLocaleDateString('ko-KR', { month: 'long', day: 'numeric', weekday: 'long' })}
+        <div className="flex justify-start lg:justify-end">
+          <div className="text-sm font-bold px-5 py-2.5 bg-blue-100 dark:bg-blue-500/20 text-blue-700 dark:text-blue-300 rounded-xl shadow-sm border border-blue-200 dark:border-blue-500/30 whitespace-nowrap">
+            {now.toLocaleDateString('ko-KR', { month: 'long', day: 'numeric', weekday: 'long' })}
+          </div>
         </div>
       </div>
 
