@@ -71,7 +71,7 @@ export default function MealCalendar() {
   const calendarDays = [];
   // 이전 달 빈 칸
   for (let i = 0; i < firstDay; i++) {
-    calendarDays.push(<div key={`empty-${i}`} className="h-32 border border-slate-200 dark:border-slate-700 bg-slate-50/10 dark:bg-slate-900/10"></div>);
+    calendarDays.push(<div key={`empty-${i}`} className="h-32 border border-slate-300/60 dark:border-slate-700 bg-slate-50/10 dark:bg-slate-900/10"></div>);
   }
 
   // 이번 달 일자
@@ -80,7 +80,7 @@ export default function MealCalendar() {
     const isToday = new Date().toDateString() === new Date(year, month, day).toDateString();
 
     calendarDays.push(
-      <div key={day} className={`h-40 border border-slate-200 dark:border-slate-700 p-2 flex flex-col gap-1 transition-colors hover:bg-slate-50/50 dark:hover:bg-slate-800/20 ${isToday ? 'bg-blue-50/30 dark:bg-blue-900/10' : ''}`}>
+      <div key={day} className={`h-40 border border-slate-300 dark:border-slate-700 p-2 flex flex-col gap-1 transition-colors hover:bg-slate-50/80 dark:hover:bg-slate-800/20 ${isToday ? 'bg-blue-50/50 dark:bg-blue-900/20' : ''}`}>
         <div className="flex justify-between items-start">
           <span className={`text-sm font-semibold ${isToday ? 'w-6 h-6 bg-blue-600 text-white rounded-full flex items-center justify-center' : 'text-slate-600 dark:text-slate-400'}`}>
             {day}
@@ -90,7 +90,7 @@ export default function MealCalendar() {
         
         <div className="flex-1 overflow-y-auto mt-1 custom-scrollbar">
           {meal ? (
-            <div className="flex flex-col gap-0.5">
+            <div className="flex flex-col gap-0.5 bg-white dark:bg-slate-800 p-2 rounded-xl shadow-xs border border-slate-100 dark:border-slate-700/50">
               {meal.menu.map((item, idx) => (
                 <div key={idx} className="text-[11px] text-slate-700 dark:text-slate-300 leading-tight">
                   • {item}
@@ -155,9 +155,9 @@ export default function MealCalendar() {
           </div>
         )}
 
-        <div className="grid grid-cols-7 border-t border-l border-slate-200 dark:border-slate-700 rounded-t-xl overflow-hidden">
+        <div className="grid grid-cols-7 border-t border-l border-slate-300 dark:border-slate-700 rounded-t-xl overflow-hidden shadow-sm">
           {['일', '월', '화', '수', '목', '금', '토'].map((d, i) => (
-            <div key={d} className={`py-4 text-center text-sm font-bold border-b border-r border-slate-200 dark:border-slate-700 ${i === 0 ? 'text-red-500' : i === 6 ? 'text-blue-500' : 'text-slate-500'}`}>
+            <div key={d} className={`py-4 text-center text-sm font-bold border-b border-r border-slate-300 dark:border-slate-700 ${i === 0 ? 'text-red-500' : i === 6 ? 'text-blue-500' : 'text-slate-500'}`}>
               {d}
             </div>
           ))}
