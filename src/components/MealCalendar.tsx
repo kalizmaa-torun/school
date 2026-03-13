@@ -127,7 +127,7 @@ export default function MealCalendar() {
   }
 
   return (
-    <div className="glass rounded-[2rem] p-8 shadow-2xl relative overflow-hidden transition-all duration-300 hover:shadow-blue-500/5">
+    <div className="glass rounded-4xl p-8 shadow-2xl relative overflow-hidden transition-all duration-300 hover:shadow-blue-500/5">
       {/* 배경 장식 */}
       <div className="absolute -top-10 -right-10 w-64 h-64 bg-blue-500/5 blur-[100px] rounded-full -z-10" />
       <div className="absolute -bottom-10 -left-10 w-64 h-64 bg-orange-500/5 blur-[100px] rounded-full -z-10" />

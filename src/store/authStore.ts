@@ -23,9 +23,11 @@ interface AuthState {
   user: UserData | null;
   children: ChildData[];
   selectedChildIndex: number;
+  _hasHydrated: boolean;
   login: (userData: UserData, childrenData: ChildData[]) => void;
   logout: () => void;
   setSelectedChildIndex: (index: number) => void;
+  setHasHydrated: (state: boolean) => void;
 }
 
 export const useAuthStore = create<AuthState>()(
@@ -34,6 +36,7 @@ export const useAuthStore = create<AuthState>()(
       user: null,
       children: [],
       selectedChildIndex: 0,
+      _hasHydrated: false,
       
       login: (userData, childrenData) => set({ 
         user: userData, 
@@ -50,10 +53,18 @@ export const useAuthStore = create<AuthState>()(
       setSelectedChildIndex: (index) => set({ 
         selectedChildIndex: index 
       }),
+      setHasHydrated: (state) => set({ 
+        _hasHydrated: state 
+      }),
     }),
     {
-      name: 'school-auth-storage', // localStorage에 저장될 키 이름
-      storage: createJSONStorage(() => localStorage), // (선택) sessionStorage로 변경 가능
+      name: 'school-auth-storage',
+      storage: createJSONStorage(() => localStorage),
+      onRehydrateStorage: (state) => {
+        return () => {
+          state.setHasHydrated(true);
+        };
+      },
     }
   )
 );

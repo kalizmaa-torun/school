@@ -26,13 +26,16 @@ function getWeekDateRange() {
 
 export default function Home() {
   const router = useRouter();
-  const { user, children, selectedChildIndex } = useAuthStore();
+  const { user, children, selectedChildIndex, _hasHydrated } = useAuthStore();
   const [weekSchedules, setWeekSchedules] = useState<ClassSchedule[]>([]);
   const [isLoading, setIsLoading] = useState(true);
 
   const activeChild = children[selectedChildIndex];
 
   useEffect(() => {
+    // 하이드레이션 완료 전에는 아무것도 하지 않음
+    if (!_hasHydrated) return;
+
     // 마운트 후 유저가 없으면 로그인 페이지로 이동
     if (user === null) {
       router.push('/login');
@@ -42,10 +45,6 @@ export default function Home() {
     const fetchSchedule = async () => {
       setIsLoading(true);
       if (activeChild) {
-        // officeCode가 DB에 저장되어 있다면 사용하고, 없다면 API 검색 시 사용했던 기본값 등으로 분기 처리 가능
-        // 현재는 baby_office 문자열을 코드로 변환하거나, DB에 저장된 값을 그대로 활용
-        // 임시로 하드코딩된 J10, 7642152 대신 activeChild 데이터를 기반으로 조회 (학교 인증 정보가 있다고 가정)
-        // 주의: NEIS API는 정확한 교육청코드, 표준학교코드가 필요합니다. 만약 가입 시 안넣었으면 기본값 fallback 임시 허용
         const officeCode = activeChild.officeCode || 'J10'; 
         const schoolCode = activeChild.schoolCode || '7642152';
         
@@ -71,10 +70,17 @@ export default function Home() {
     };
 
     fetchSchedule();
-  }, [user, activeChild, router]);
+  }, [_hasHydrated, user, activeChild, router]);
 
-  if (!user) {
-    return null; // Redirecting..
+  if (!_hasHydrated || user === null) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-[var(--background)]">
+        <div className="flex flex-col items-center gap-4">
+          <Loader2 className="w-12 h-12 text-blue-500 animate-spin" />
+          <p className="text-slate-500 font-medium animate-pulse">잠시만 기다려주세요...</p>
+        </div>
+      </div>
+    );
   }
 
   const days: DayOfWeek[] = ['일', '월', '화', '수', '목', '금', '토'] as any;
@@ -117,12 +123,12 @@ export default function Home() {
 
         {/* 사이드 위젯 그룹 */}
         <div className="flex flex-col space-y-6">
-          <div className="glass rounded-2xl p-6 flex-1 max-h-[500px] flex flex-col hide-scrollbar relative">
+          <div className="glass rounded-2xl p-6 flex-1 max-h-[600px] flex flex-col hide-scrollbar relative">
             <h2 className="text-lg font-bold mb-4 flex items-center shrink-0">
               <span className="w-2 h-6 bg-emerald-500 rounded-full mr-3 inline-block"></span>
               오늘의 수업
             </h2>
-            <div className="h-[calc(100%-2rem)] relative">
+            <div className="flex-1 relative overflow-y-auto custom-scrollbar pr-1">
               {isLoading ? (
                  <div className="absolute inset-0 flex items-center justify-center">
                    <Loader2 className="w-6 h-6 text-emerald-500 animate-spin" />
@@ -133,12 +139,12 @@ export default function Home() {
             </div>
           </div>
 
-          <div className="glass rounded-2xl p-6 flex-1 max-h-[400px] flex flex-col hide-scrollbar">
+          <div className="glass rounded-2xl p-6 flex-1 flex flex-col hide-scrollbar">
             <h2 className="text-lg font-bold mb-4 flex items-center shrink-0">
               <span className="w-2 h-6 bg-purple-500 rounded-full mr-3 inline-block"></span>
               해야 할 과제
             </h2>
-            <div className="h-[calc(100%-2rem)]">
+            <div className="flex-1 overflow-y-auto custom-scrollbar pr-1">
               <TaskBoard />
             </div>
           </div>

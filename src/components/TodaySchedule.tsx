@@ -32,7 +32,7 @@ export default function TodaySchedule({ schedules, dayOfWeek }: TodaySchedulePro
   }
 
   return (
-    <div className="flex flex-col space-y-3 overflow-y-auto pr-1">
+    <div className="space-y-3">
       {todayClasses.map((cls) => {
         const clsColors = colorMap[cls.color] || colorMap['blue'];
         
