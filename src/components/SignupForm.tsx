@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from 'react';
+import { useRouter } from 'next/navigation';
 import { Plus, Trash2, Search, CheckCircle2 } from 'lucide-react';
 import { searchSchool } from '@/lib/neisApi';
 import { supabase } from '@/lib/supabaseClient';
@@ -39,6 +40,7 @@ interface ChildInfo {
 }
 
 export default function SignupForm() {
+  const router = useRouter();
   const [formData, setFormData] = useState({
     username: '',
     parentName: '',
@@ -187,7 +189,7 @@ export default function SignupForm() {
       }
 
       alert('회원가입이 완료되었습니다!');
-      // window.location.href = '/'; // 필요 시 메인으로 이동
+      router.push('/login');
     } catch (err) {
       console.error('Signup error:', err);
       setErrorMsg('회원가입 처리 중 예기치 않은 오류가 발생했습니다.');
