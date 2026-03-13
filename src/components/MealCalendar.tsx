@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { useAuthStore } from '@/store/authStore';
 import { getMonthlyMealInfo } from '@/lib/neisApi';
 import { MealData } from '@/types';
@@ -38,6 +38,31 @@ export default function MealCalendar() {
 
     fetchMeals();
   }, [activeChild, currentDate]);
+
+  const now = new Date();
+  const daysKR = ['일', '월', '화', '수', '목', '금', '토'];
+  const todayKR = daysKR[now.getDay()];
+  
+  const scrollContainerRef = useRef<HTMLDivElement>(null);
+  const todayRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    // 현재 보고 있는 달이 실제 이번 달인 경우에만 자동 스크롤
+    const isThisMonth = currentDate.getMonth() === now.getMonth() && currentDate.getFullYear() === now.getFullYear();
+    
+    if (isThisMonth && todayRef.current && scrollContainerRef.current) {
+      const container = scrollContainerRef.current;
+      const target = todayRef.current;
+      
+      const timer = setTimeout(() => {
+        container.scrollTo({
+          left: target.offsetLeft - 100,
+          behavior: 'smooth'
+        });
+      }, 500);
+      return () => clearTimeout(timer);
+    }
+  }, [currentDate, mealData]);
 
   const nextMonth = () => {
     setCurrentDate(new Date(currentDate.getFullYear(), currentDate.getMonth() + 1, 1));
@@ -94,7 +119,12 @@ export default function MealCalendar() {
     }
 
     calendarDays.push(
-      <div key={day} className={`h-52 p-2 flex flex-col gap-1 transition-all group ${isToday ? 'bg-blue-50/40 dark:bg-blue-900/10' : ''}`}>
+      <div 
+        key={day} 
+        className={`h-52 p-2 flex flex-col gap-1 transition-all group ${
+          isToday ? 'bg-blue-50/40 dark:bg-blue-900/10' : (getDayOfWeek(year, month, day) === now.getDay() && year === now.getFullYear() && month === now.getMonth() ? 'bg-blue-50/10 dark:bg-blue-900/5' : '')
+        }`}
+      >
         <div className="flex justify-between items-center mb-1">
           <span className={`text-base font-bold ${isToday ? 'w-8 h-8 bg-blue-600 text-white rounded-lg flex items-center justify-center shadow-lg shadow-blue-500/30' : 'text-slate-600 dark:text-slate-400'}`}>
             {day}
@@ -181,16 +211,30 @@ export default function MealCalendar() {
           </div>
         )}
 
-        <div className="border border-slate-300 dark:border-slate-700 rounded-[1.5rem] overflow-hidden bg-slate-50/30 dark:bg-slate-900/20 shadow-inner">
-          <div className="grid grid-cols-5 bg-slate-100/80 dark:bg-slate-800/80 backdrop-blur-sm border-b border-slate-300 dark:border-slate-700 rounded-t-[1.4rem]">
-            {['월요일', '화요일', '수요일', '목요일', '금요일'].map((d) => (
-              <div key={d} className="py-4 text-center text-sm font-black text-slate-600 dark:text-slate-300 uppercase tracking-widest">
-                {d}
-              </div>
-            ))}
-          </div>
-          <div className="grid grid-cols-5 divide-x divide-y divide-slate-300 dark:divide-slate-700">
-            {calendarDays}
+        <div 
+          ref={scrollContainerRef}
+          className="border border-slate-300 dark:border-slate-700 rounded-[1.5rem] overflow-x-auto bg-slate-50/30 dark:bg-slate-900/20 shadow-inner custom-scrollbar"
+        >
+          <div className="min-w-[800px]">
+            <div className="grid grid-cols-5 bg-slate-100/80 dark:bg-slate-800/80 backdrop-blur-sm border-b border-slate-300 dark:border-slate-700 rounded-t-[1.4rem] sticky top-0 z-10">
+              {['월요일', '화요일', '수요일', '목요일', '금요일'].map((d) => {
+                const isTodayColumn = d === todayKR + "요일";
+                return (
+                  <div 
+                    key={d} 
+                    ref={isTodayColumn ? todayRef : null}
+                    className={`py-4 text-center text-sm font-black uppercase tracking-widest transition-colors ${
+                      isTodayColumn ? 'text-blue-600 dark:text-blue-400 bg-blue-50/50 dark:bg-blue-900/20' : 'text-slate-600 dark:text-slate-300'
+                    }`}
+                  >
+                    {d}
+                  </div>
+                );
+              })}
+            </div>
+            <div className="grid grid-cols-5 divide-x divide-y divide-slate-300 dark:divide-slate-700">
+              {calendarDays}
+            </div>
           </div>
         </div>
       </div>
