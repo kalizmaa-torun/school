@@ -123,12 +123,12 @@ export default function Home() {
 
         {/* 사이드 위젯 그룹 */}
         <div className="flex flex-col space-y-6">
-          <div className="glass rounded-2xl p-6 flex-1 max-h-[800px] flex flex-col hide-scrollbar relative">
+          <div className="glass rounded-2xl p-6 h-[480px] flex flex-col relative overflow-hidden transition-all duration-300 hover:shadow-lg">
             <h2 className="text-lg font-bold mb-4 flex items-center shrink-0">
               <span className="w-2 h-6 bg-emerald-500 rounded-full mr-3 inline-block"></span>
               오늘의 수업
             </h2>
-            <div className="flex-1 relative overflow-y-auto custom-scrollbar pr-1">
+            <div className="flex-1 overflow-y-auto custom-scrollbar pr-2 -mr-2">
               {isLoading ? (
                  <div className="absolute inset-0 flex items-center justify-center">
                    <Loader2 className="w-6 h-6 text-emerald-500 animate-spin" />
@@ -139,12 +139,12 @@ export default function Home() {
             </div>
           </div>
 
-          <div className="glass rounded-2xl p-6 flex-1 flex flex-col hide-scrollbar">
+          <div className="glass rounded-2xl p-6 h-[480px] flex flex-col relative overflow-hidden transition-all duration-300 hover:shadow-lg">
             <h2 className="text-lg font-bold mb-4 flex items-center shrink-0">
               <span className="w-2 h-6 bg-purple-500 rounded-full mr-3 inline-block"></span>
               해야 할 과제
             </h2>
-            <div className="flex-1 overflow-y-auto custom-scrollbar pr-1">
+            <div className="flex-1 overflow-y-auto custom-scrollbar pr-2 -mr-2">
               <TaskBoard />
             </div>
           </div>

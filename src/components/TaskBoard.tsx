@@ -39,7 +39,7 @@ export default function TaskBoard() {
   }, []);
 
   return (
-    <div className="flex flex-col h-full space-y-3 overflow-y-auto pr-1">
+    <div className="space-y-3">
       {sortedTasks.map((task) => {
         const config = statusConfig[task.status];
         const Icon = config.icon;
