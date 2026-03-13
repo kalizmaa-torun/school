@@ -1,6 +1,6 @@
 "use client";
 
-import { useMemo } from 'react';
+import { useMemo, useEffect, useRef } from 'react';
 import { ClassSchedule, DayOfWeek } from '@/types';
 
 const DAYS: DayOfWeek[] = ['월', '화', '수', '목', '금'];
@@ -48,17 +48,54 @@ export default function WeeklySchedule({ schedules }: WeeklyScheduleProps) {
     return Array.from(map.values()).sort((a, b) => timeToMinutes(a.start) - timeToMinutes(b.start));
   }, [schedules]);
 
+  const now = new Date();
+  const daysKR = ['일', '월', '화', '수', '목', '금', '토'];
+  const todayKR = daysKR[now.getDay()];
+  
+  const scrollContainerRef = useRef<HTMLDivElement>(null);
+  const todayRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    if (todayRef.current && scrollContainerRef.current) {
+      const container = scrollContainerRef.current;
+      const target = todayRef.current;
+      
+      // 약간의 지연 후 스크롤 처리 (렌더링 완료 보장)
+      const timer = setTimeout(() => {
+        container.scrollTo({
+          left: target.offsetLeft - 100, // 좌측에 여백을 조금 둠
+          behavior: 'smooth'
+        });
+      }, 300);
+      return () => clearTimeout(timer);
+    }
+  }, []);
+
   return (
-    <div className="w-full h-full overflow-x-auto rounded-lg border border-[var(--border)] bg-[var(--surface-inner)]">
+    <div 
+      ref={scrollContainerRef}
+      className="w-full h-full overflow-x-auto rounded-lg border border-[var(--border)] bg-[var(--surface-inner)] custom-scrollbar"
+    >
       <div className="min-w-[600px] flex flex-col">
         {/* Header (Days) */}
         <div className="flex border-b border-[var(--border)] sticky top-0 bg-[var(--surface-inner)] z-20">
           <div className="w-20 border-r border-[var(--border)] bg-[var(--surface-inner)] flex-shrink-0"></div>
-          {DAYS.map(day => (
-            <div key={day} className="flex-1 text-center py-3 font-semibold text-sm text-[var(--foreground)]">
-              {day}요일
-            </div>
-          ))}
+          {DAYS.map(day => {
+            const isToday = day === todayKR;
+            return (
+              <div 
+                key={day} 
+                ref={isToday ? todayRef : null}
+                className={`flex-1 text-center py-3 font-semibold text-sm transition-colors ${
+                  isToday 
+                    ? "text-blue-600 dark:text-blue-400 bg-blue-50/50 dark:bg-blue-900/20" 
+                    : "text-[var(--foreground)]"
+                }`}
+              >
+                {day}요일
+              </div>
+            );
+          })}
         </div>
 
         {/* Body (Grid) */}
@@ -78,7 +115,12 @@ export default function WeeklySchedule({ schedules }: WeeklyScheduleProps) {
                   const classesOfDay = schedules.filter(s => s.day === day && s.startTime === period.start);
                   
                   return (
-                    <div key={day} className={`flex-1 p-2 ${idx < DAYS.length - 1 ? 'border-r border-[var(--border)]/50' : ''}`}>
+                    <div 
+                      key={day} 
+                      className={`flex-1 p-2 transition-colors ${
+                        day === todayKR ? 'bg-blue-50/30 dark:bg-blue-900/10' : ''
+                      } ${idx < DAYS.length - 1 ? 'border-r border-[var(--border)]/50' : ''}`}
+                    >
                       {classesOfDay.map(schedule => (
                         <div
                           key={schedule.id}

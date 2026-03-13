@@ -24,10 +24,12 @@ interface AuthState {
   children: ChildData[];
   selectedChildIndex: number;
   _hasHydrated: boolean;
+  isMobileMenuOpen: boolean;
   login: (userData: UserData, childrenData: ChildData[]) => void;
   logout: () => void;
   setSelectedChildIndex: (index: number) => void;
   setHasHydrated: (state: boolean) => void;
+  setMobileMenuOpen: (open: boolean) => void;
 }
 
 export const useAuthStore = create<AuthState>()(
@@ -37,6 +39,7 @@ export const useAuthStore = create<AuthState>()(
       children: [],
       selectedChildIndex: 0,
       _hasHydrated: false,
+      isMobileMenuOpen: false,
       
       login: (userData, childrenData) => set({ 
         user: userData, 
@@ -55,6 +58,9 @@ export const useAuthStore = create<AuthState>()(
       }),
       setHasHydrated: (state) => set({ 
         _hasHydrated: state 
+      }),
+      setMobileMenuOpen: (open) => set({ 
+        isMobileMenuOpen: open 
       }),
     }),
     {

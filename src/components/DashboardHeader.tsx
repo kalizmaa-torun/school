@@ -7,7 +7,7 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 
 export default function DashboardHeader() {
-  const { user, children, selectedChildIndex, setSelectedChildIndex, logout } = useAuthStore();
+  const { user, children, selectedChildIndex, setSelectedChildIndex, logout, setMobileMenuOpen, isMobileMenuOpen } = useAuthStore();
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
   const router = useRouter();
@@ -33,7 +33,10 @@ export default function DashboardHeader() {
   return (
     <header className="h-16 flex items-center justify-between px-4 md:px-6 bg-[var(--surface)] border-b border-[var(--border)] shadow-sm z-10 transition-colors duration-300">
       <div className="flex items-center">
-        <button className="md:hidden p-2 mr-3 text-slate-500 hover:text-[var(--primary)] rounded-lg hover:bg-[var(--surface-hover)] transition-colors">
+        <button 
+          onClick={() => setMobileMenuOpen(!isMobileMenuOpen)}
+          className="md:hidden p-2 mr-3 text-slate-500 hover:text-[var(--primary)] rounded-lg hover:bg-[var(--surface-hover)] transition-colors"
+        >
           <Menu size={24} />
         </button>
         <div className="relative hidden md:block">

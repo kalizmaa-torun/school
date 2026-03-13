@@ -15,7 +15,7 @@ import { useAuthStore } from "@/store/authStore";
 export default function Sidebar() {
   const pathname = usePathname();
   const router = useRouter();
-  const logout = useAuthStore(state => state.logout);
+  const { logout, isMobileMenuOpen, setMobileMenuOpen } = useAuthStore();
 
   const navItems = [
     { name: "대시보드", href: "/", icon: LayoutDashboard },
@@ -26,10 +26,24 @@ export default function Sidebar() {
   const handleLogout = () => {
     logout();
     router.push('/login');
+    setMobileMenuOpen(false);
   };
 
   return (
-    <aside className="w-64 flex flex-col bg-[var(--surface)] border-r border-[var(--border)] shadow-sm hidden md:flex z-10 transition-colors duration-300">
+    <>
+      {/* Mobile Backdrop */}
+      {isMobileMenuOpen && (
+        <div 
+          className="fixed inset-0 bg-black/50 z-40 md:hidden backdrop-blur-sm transition-opacity"
+          onClick={() => setMobileMenuOpen(false)}
+        />
+      )}
+
+      <aside className={`
+        fixed inset-y-0 left-0 w-64 flex flex-col bg-[var(--surface)] border-r border-[var(--border)] shadow-xl z-50 
+        transition-transform duration-300 ease-in-out md:relative md:translate-x-0 md:shadow-sm
+        ${isMobileMenuOpen ? 'translate-x-0' : '-translate-x-full'}
+      `}>
       <div className="h-16 flex items-center px-6 border-b border-[var(--border)]">
         <div className="w-8 h-8 rounded-lg bg-amber-400 flex items-center justify-center mr-3 shadow-md shadow-amber-500/20">
           <Bus size={18} className="text-white" />
@@ -45,6 +59,7 @@ export default function Sidebar() {
             <Link 
               key={item.name} 
               href={item.href}
+              onClick={() => setMobileMenuOpen(false)}
               className={`flex items-center px-3 py-2.5 rounded-lg transition-all duration-200 group ${
                 isActive 
                   ? "bg-[var(--primary)] text-white shadow-md shadow-blue-500/20" 
@@ -68,5 +83,6 @@ export default function Sidebar() {
         </button>
       </div>
     </aside>
+    </>
   );
 }
