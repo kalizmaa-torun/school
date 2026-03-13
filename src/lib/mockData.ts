@@ -17,8 +17,8 @@ const nextWeek = new Date(today);
 nextWeek.setDate(nextWeek.getDate() + 7);
 
 export const mockTasks: Task[] = [
-  { id: 't1', title: 'Binary Search Tree 구현 과제', courseName: '자료구조', dueDate: today.toISOString(), status: 'TODO', priority: 'High' },
-  { id: 't2', title: '운영체제 중간고사 대비 요약본', courseName: '운영체제', dueDate: tomorrow.toISOString(), status: 'IN_PROGRESS', priority: 'Medium' },
-  { id: 't3', title: 'RDBMS vs NoSQL 레포트', courseName: '데이터베이스', dueDate: nextWeek.toISOString(), status: 'TODO', priority: 'Low' },
-  { id: 't4', title: 'React Todo 앱 만들기', courseName: '웹프로그래밍', dueDate: nextWeek.toISOString(), status: 'DONE', priority: 'Medium' },
+  { id: 't1', title: '영어 숙제', courseName: '영어', dueDate: today.toISOString(), status: 'TODO', priority: 'High' },
+  { id: 't2', title: '구몬 학습지 숙제', courseName: '구몬', dueDate: tomorrow.toISOString(), status: 'IN_PROGRESS', priority: 'Medium' },
+  { id: 't3', title: '피아노 연습', courseName: '피아노', dueDate: nextWeek.toISOString(), status: 'TODO', priority: 'Low' },
+
 ];
