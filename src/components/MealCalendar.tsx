@@ -89,12 +89,12 @@ export default function MealCalendar() {
     if (day === 1 || (day < 7 && calendarDays.length === 0)) {
       const padding = dayOfWeek - 1; // 월요일(1) 기준이므로
       for (let p = 0; p < padding; p++) {
-        calendarDays.push(<div key={`empty-${day}-${p}`} className="h-44 bg-slate-50/10 dark:bg-slate-900/5"></div>);
+        calendarDays.push(<div key={`empty-${day}-${p}`} className="h-52 bg-slate-50/10 dark:bg-slate-900/5"></div>);
       }
     }
 
     calendarDays.push(
-      <div key={day} className={`h-44 p-2 flex flex-col gap-1 transition-all group ${isToday ? 'bg-blue-50/40 dark:bg-blue-900/10' : ''}`}>
+      <div key={day} className={`h-52 p-2 flex flex-col gap-1 transition-all group ${isToday ? 'bg-blue-50/40 dark:bg-blue-900/10' : ''}`}>
         <div className="flex justify-between items-center mb-1">
           <span className={`text-base font-bold ${isToday ? 'w-8 h-8 bg-blue-600 text-white rounded-lg flex items-center justify-center shadow-lg shadow-blue-500/30' : 'text-slate-600 dark:text-slate-400'}`}>
             {day}
@@ -181,8 +181,8 @@ export default function MealCalendar() {
           </div>
         )}
 
-        <div className="border border-slate-300 dark:border-slate-700 rounded-[1.5rem] overflow-hidden bg-slate-50/30 dark:bg-slate-900/20">
-          <div className="grid grid-cols-5 bg-slate-100/80 dark:bg-slate-800/80 backdrop-blur-sm border-b border-slate-300 dark:border-slate-700">
+        <div className="border border-slate-300 dark:border-slate-700 rounded-[1.5rem] overflow-hidden bg-slate-50/30 dark:bg-slate-900/20 shadow-inner">
+          <div className="grid grid-cols-5 bg-slate-100/80 dark:bg-slate-800/80 backdrop-blur-sm border-b border-slate-300 dark:border-slate-700 rounded-t-[1.4rem]">
             {['월요일', '화요일', '수요일', '목요일', '금요일'].map((d) => (
               <div key={d} className="py-4 text-center text-sm font-black text-slate-600 dark:text-slate-300 uppercase tracking-widest">
                 {d}
