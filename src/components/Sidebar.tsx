@@ -8,7 +8,7 @@ import {
   Utensils, 
   CheckSquare, 
   Settings, 
-  Power 
+  LogOut 
 } from "lucide-react";
 import { useAuthStore } from "@/store/authStore";
 
@@ -78,7 +78,7 @@ export default function Sidebar() {
           onClick={handleLogout}
           className="flex w-full items-center px-3 py-2.5 rounded-lg text-slate-500 dark:text-slate-400 hover:bg-red-50 hover:text-red-500 dark:hover:bg-red-500/10 dark:hover:text-red-400 transition-colors"
         >
-          <Power size={18} className="mr-3 text-red-500" />
+          <LogOut size={18} className="mr-3 text-red-500" />
           <span className="font-medium text-sm">로그아웃</span>
         </button>
       </div>

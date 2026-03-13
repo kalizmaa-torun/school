@@ -213,7 +213,7 @@ export default function MealCalendar() {
 
         <div 
           ref={scrollContainerRef}
-          className="border border-slate-300 dark:border-slate-700 rounded-[1.5rem] overflow-x-auto bg-slate-50/30 dark:bg-slate-900/20 shadow-inner custom-scrollbar"
+          className="border border-slate-300 dark:border-slate-700 rounded-3xl overflow-x-auto bg-slate-50/30 dark:bg-slate-900/20 shadow-inner custom-scrollbar"
         >
           <div className="min-w-[800px]">
             <div className="grid grid-cols-5 bg-slate-100/80 dark:bg-slate-800/80 backdrop-blur-sm border-b border-slate-300 dark:border-slate-700 rounded-t-[1.4rem] sticky top-0 z-10">
