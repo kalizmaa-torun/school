@@ -2,6 +2,21 @@
 
 import { useMemo, useEffect, useRef } from 'react';
 import { ClassSchedule, DayOfWeek } from '@/types';
+import { 
+  BookOpen, 
+  Calculator, 
+  FlaskConical, 
+  Palette, 
+  Trophy, 
+  Music, 
+  Languages, 
+  Globe, 
+  Heart, 
+  Sparkles, 
+  Hammer, 
+  HelpCircle,
+  Clapperboard
+} from 'lucide-react';
 
 const DAYS: DayOfWeek[] = ['월', '화', '수', '목', '금'];
 
@@ -16,6 +31,23 @@ const colorMap: Record<string, string> = {
 };
 
 const defaultColor = 'bg-slate-100 text-slate-800 border-slate-200 dark:bg-slate-800 dark:text-slate-300 dark:border-slate-700';
+
+const getSubjectIcon = (name: string) => {
+  if (name.includes('국어')) return <BookOpen size={16} />;
+  if (name.includes('수학')) return <Calculator size={16} />;
+  if (name.includes('과학')) return <FlaskConical size={16} />;
+  if (name.includes('미술')) return <Palette size={16} />;
+  if (name.includes('체육')) return <Trophy size={16} />;
+  if (name.includes('영어') || name.includes('영어특화')) return <Languages size={14} />;
+  if (name.includes('사회')) return <Globe size={16} />;
+  if (name.includes('음악')) return <Music size={16} />;
+  if (name.includes('도덕')) return <Heart size={16} />;
+  if (name.includes('실과')) return <Hammer size={16} />;
+  if (name.includes('창체') || name.includes('창의')) return <Sparkles size={16} />;
+  if (name.includes('컴퓨터') || name.includes('코딩')) return <Calculator size={16} />;
+  if (name.includes('방송')) return <Clapperboard size={16} />;
+  return <HelpCircle size={16} />;
+};
 
 function timeToMinutes(timeStr: string) {
   const [h, m] = timeStr.split(':').map(Number);
@@ -124,9 +156,12 @@ export default function WeeklySchedule({ schedules }: WeeklyScheduleProps) {
                       {classesOfDay.map(schedule => (
                         <div
                           key={schedule.id}
-                          className={`w-full h-full min-h-[70px] border rounded-xl p-3 shadow-sm flex flex-col justify-center items-center text-center transition-transform hover:scale-[1.02] hover:shadow-md cursor-pointer ${colorMap[schedule.color] || defaultColor}`}
+                          className={`w-full h-full min-h-[70px] border rounded-xl p-2.5 shadow-sm flex flex-col justify-center items-center text-center transition-transform hover:scale-[1.02] hover:shadow-md cursor-pointer ${colorMap[schedule.color] || defaultColor}`}
                         >
-                          <div className="font-bold text-sm md:text-base leading-snug">{schedule.name}</div>
+                          <div className="mb-1.5 opacity-80">
+                            {getSubjectIcon(schedule.name)}
+                          </div>
+                          <div className="font-bold text-[13px] md:text-sm leading-tight break-keep">{schedule.name}</div>
                         </div>
                       ))}
                     </div>
