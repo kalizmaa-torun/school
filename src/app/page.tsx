@@ -94,7 +94,7 @@ export default function Home() {
           <h1 className="text-2xl font-bold text-[var(--foreground)] tracking-tight">안녕하세요, 반가워요 👋</h1>
           <p className="text-slate-500 dark:text-slate-400 mt-1">오늘의 스케줄과 주간 시간표, 과제를 확인하세요.</p>
         </div>
-        <div className="text-sm font-medium px-4 py-2 bg-blue-50 dark:bg-blue-500/10 text-blue-600 dark:text-blue-400 rounded-lg whitespace-nowrap">
+        <div className="text-sm font-bold px-5 py-2.5 bg-blue-100 dark:bg-blue-500/20 text-blue-700 dark:text-blue-300 rounded-xl shadow-sm border border-blue-200 dark:border-blue-500/30 whitespace-nowrap">
           {now.toLocaleDateString('ko-KR', { month: 'long', day: 'numeric', weekday: 'long' })}
         </div>
       </div>

@@ -118,9 +118,9 @@ export default function WeeklySchedule({ schedules }: WeeklyScheduleProps) {
               <div 
                 key={day} 
                 ref={isToday ? todayRef : null}
-                className={`flex-1 text-center py-3 font-semibold text-sm transition-colors ${
+                className={`flex-1 text-center py-3 font-bold text-sm transition-all ${
                   isToday 
-                    ? "text-blue-600 dark:text-blue-400 bg-blue-50/50 dark:bg-blue-900/20" 
+                    ? "text-blue-700 dark:text-blue-300 bg-blue-100/50 dark:bg-blue-500/20 border-b-2 border-blue-500" 
                     : "text-[var(--foreground)]"
                 }`}
               >
@@ -150,7 +150,7 @@ export default function WeeklySchedule({ schedules }: WeeklyScheduleProps) {
                     <div 
                       key={day} 
                       className={`flex-1 p-2 transition-colors ${
-                        day === todayKR ? 'bg-blue-50/30 dark:bg-blue-900/10' : ''
+                        day === todayKR ? 'bg-blue-100/20 dark:bg-blue-500/10' : ''
                       } ${idx < DAYS.length - 1 ? 'border-r border-[var(--border)]/50' : ''}`}
                     >
                       {classesOfDay.map(schedule => (
