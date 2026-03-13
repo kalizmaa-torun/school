@@ -117,7 +117,7 @@ export default function Home() {
 
         {/* 사이드 위젯 그룹 */}
         <div className="flex flex-col space-y-6">
-          <div className="glass rounded-2xl p-6 flex-1 max-h-[400px] flex flex-col hide-scrollbar relative">
+          <div className="glass rounded-2xl p-6 flex-1 max-h-[500px] flex flex-col hide-scrollbar relative">
             <h2 className="text-lg font-bold mb-4 flex items-center shrink-0">
               <span className="w-2 h-6 bg-emerald-500 rounded-full mr-3 inline-block"></span>
               오늘의 수업
