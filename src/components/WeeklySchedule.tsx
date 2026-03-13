@@ -78,8 +78,8 @@ export default function WeeklySchedule({ schedules }: WeeklyScheduleProps) {
     >
       <div className="min-w-[600px] flex flex-col">
         {/* Header (Days) */}
-        <div className="flex border-b border-[var(--border)] sticky top-0 bg-[var(--surface-inner)] z-20">
-          <div className="w-20 border-r border-[var(--border)] bg-[var(--surface-inner)] flex-shrink-0"></div>
+        <div className="flex border-b border-[var(--border)] sticky top-0 bg-[var(--surface-inner)] z-30">
+          <div className="w-20 border-r border-[var(--border)] bg-[var(--surface-inner)] flex-shrink-0 sticky left-0 z-40 shadow-[2px_0_5px_-2px_rgba(0,0,0,0.1)] dark:shadow-[2px_0_5px_-2px_rgba(0,0,0,0.3)]"></div>
           {DAYS.map(day => {
             const isToday = day === todayKR;
             return (
@@ -103,7 +103,7 @@ export default function WeeklySchedule({ schedules }: WeeklyScheduleProps) {
           {periods.map(period => (
             <div key={period.start} className="flex border-b border-[var(--border)] min-h-[120px]">
               {/* Time axis */}
-              <div className="w-20 flex-shrink-0 flex flex-col items-center justify-center border-r border-[var(--border)] bg-[var(--surface-inner)] py-2">
+              <div className="w-20 flex-shrink-0 flex flex-col items-center justify-center border-r border-[var(--border)] bg-[var(--surface-inner)] py-2 sticky left-0 z-10 shadow-[2px_0_5px_-2px_rgba(0,0,0,0.1)] dark:shadow-[2px_0_5px_-2px_rgba(0,0,0,0.3)]">
                 <span className="font-bold text-sm text-[var(--foreground)]">{period.label}</span>
                 <span className="text-[11px] mt-1 text-slate-500 font-medium">{period.start}</span>
                 <span className="text-[11px] text-slate-500 font-medium">~ {period.end}</span>
