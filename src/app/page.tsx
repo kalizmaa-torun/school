@@ -101,12 +101,12 @@ export default function Home() {
 
       <div className="grid grid-cols-1 lg:grid-cols-4 gap-6">
         {/* 주간 시간표 */}
-        <div className="lg:col-span-3 glass rounded-2xl p-6 min-h-[400px] flex flex-col relative">
+        <div className="lg:col-span-3 glass rounded-2xl p-6 flex flex-col relative">
           <h2 className="text-lg font-bold mb-4 flex items-center">
             <span className="w-2 h-6 bg-blue-500 rounded-full mr-3 inline-block"></span>
             주간 시간표 {activeChild ? `(${activeChild.baby_school} ${activeChild.baby_grade}-${activeChild.baby_class})` : ''}
           </h2>
-          <div className="flex-1 min-h-[500px] relative">
+          <div className="flex-1 relative">
             {isLoading ? (
               <div className="absolute inset-0 flex items-center justify-center bg-white/50 dark:bg-slate-900/50 rounded-xl z-10 backdrop-blur-sm">
                 <Loader2 className="w-8 h-8 text-blue-500 animate-spin" />

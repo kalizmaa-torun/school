@@ -101,7 +101,7 @@ export default function WeeklySchedule({ schedules }: WeeklyScheduleProps) {
         {/* Body (Grid) */}
         <div className="flex flex-col bg-[var(--surface)]">
           {periods.map(period => (
-            <div key={period.start} className="flex border-b border-[var(--border)] min-h-[120px]">
+            <div key={period.start} className="flex border-b border-[var(--border)] min-h-[100px]">
               {/* Time axis */}
               <div className="w-20 flex-shrink-0 flex flex-col items-center justify-center border-r border-[var(--border)] bg-[var(--surface-inner)] py-2 sticky left-0 z-10 shadow-[2px_0_5px_-2px_rgba(0,0,0,0.1)] dark:shadow-[2px_0_5px_-2px_rgba(0,0,0,0.3)]">
                 <span className="font-bold text-sm text-[var(--foreground)]">{period.label}</span>
@@ -124,7 +124,7 @@ export default function WeeklySchedule({ schedules }: WeeklyScheduleProps) {
                       {classesOfDay.map(schedule => (
                         <div
                           key={schedule.id}
-                          className={`w-full h-full min-h-[90px] border rounded-xl p-3 shadow-sm flex flex-col justify-center items-center text-center transition-transform hover:scale-[1.02] hover:shadow-md cursor-pointer ${colorMap[schedule.color] || defaultColor}`}
+                          className={`w-full h-full min-h-[70px] border rounded-xl p-3 shadow-sm flex flex-col justify-center items-center text-center transition-transform hover:scale-[1.02] hover:shadow-md cursor-pointer ${colorMap[schedule.color] || defaultColor}`}
                         >
                           <div className="font-bold text-sm md:text-base leading-snug">{schedule.name}</div>
                         </div>
