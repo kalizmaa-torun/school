@@ -7,9 +7,11 @@ import {
   LayoutDashboard, 
   Utensils, 
   CheckSquare, 
+  Users,
   Settings, 
   LogOut 
 } from "lucide-react";
+
 import { useAuthStore } from "@/store/authStore";
 
 export default function Sidebar() {
@@ -21,7 +23,9 @@ export default function Sidebar() {
     { name: "대시보드", href: "/", icon: LayoutDashboard },
     { name: "급식메뉴", href: "/meals", icon: Utensils },
     { name: "과제 관리", href: "/tasks", icon: CheckSquare },
+    { name: "커뮤니티", href: "/community", icon: Users },
   ];
+
 
   const handleLogout = () => {
     logout();
