@@ -6,26 +6,34 @@ import {
   School,
   LayoutDashboard, 
   Utensils, 
-  CheckSquare, 
+  BookOpen, 
   Users,
   Settings, 
   LogOut 
 } from "lucide-react";
-
 import { useAuthStore } from "@/store/authStore";
 
 export default function Sidebar() {
   const pathname = usePathname();
   const router = useRouter();
-  const { logout, isMobileMenuOpen, setMobileMenuOpen } = useAuthStore();
+  const { user, logout, isMobileMenuOpen, setMobileMenuOpen } = useAuthStore();
+
+  // 사용자 아이디 확인 (mohani7 여부 체크용)
+  const userMetadata = user?.user_metadata;
+  const currentUserId = userMetadata?.login_id || user?.email?.split('@')[0] || "";
+  const isAdmin = currentUserId === "mohani7";
 
   const navItems = [
     { name: "대시보드", href: "/", icon: LayoutDashboard },
     { name: "급식메뉴", href: "/meals", icon: Utensils },
-    { name: "과제 관리", href: "/tasks", icon: CheckSquare },
+    { name: "숙제관리", href: "/homework", icon: BookOpen },
     { name: "커뮤니티", href: "/community", icon: Users },
   ];
 
+  // 관리자일 경우 관리자 메뉴 추가
+  if (isAdmin) {
+    navItems.push({ name: "관리자 메뉴", href: "/admin", icon: Settings });
+  }
 
   const handleLogout = () => {
     logout();
@@ -49,7 +57,7 @@ export default function Sidebar() {
         ${isMobileMenuOpen ? 'translate-x-0' : '-translate-x-full'}
       `}>
       <div className="h-16 flex items-center px-6 border-b border-[var(--border)]">
-        <div className="w-8 h-8 rounded-lg bg-blue-500 flex items-center justify-center mr-3 shadow-md shadow-blue-500/20">
+        <div className="w-8 h-8 rounded-lg bg-[var(--primary)] flex items-center justify-center mr-3 shadow-md shadow-[var(--primary)]/20">
           <School size={18} className="text-white" />
         </div>
         <h1 className="text-lg font-bold text-[var(--foreground)] tracking-tight">스쿨 보드</h1>

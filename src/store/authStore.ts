@@ -1,5 +1,6 @@
 import { create } from 'zustand';
 import { persist, createJSONStorage } from 'zustand/middleware';
+import { Session, User } from '@supabase/supabase-js';
 
 export interface ChildData {
   id?: number;
@@ -9,23 +10,19 @@ export interface ChildData {
   baby_office: string;
   baby_school: string;
   parents_id: string;
-  // Supabase에 저장하지 않았다면 프론트에서 임시로 고정 코드를 쓰되 나중에 확장
   schoolCode?: string; 
   officeCode?: string; 
 }
 
-interface UserData {
-  id: string;
-  user_name: string;
-}
-
 interface AuthState {
-  user: UserData | null;
+  session: Session | null;
+  user: User | null;
   children: ChildData[];
   selectedChildIndex: number;
   _hasHydrated: boolean;
   isMobileMenuOpen: boolean;
-  login: (userData: UserData, childrenData: ChildData[]) => void;
+  setSession: (session: Session | null) => void;
+  setChildren: (childrenData: ChildData[]) => void;
   logout: () => void;
   setSelectedChildIndex: (index: number) => void;
   setHasHydrated: (state: boolean) => void;
@@ -35,19 +32,24 @@ interface AuthState {
 export const useAuthStore = create<AuthState>()(
   persist(
     (set) => ({
+      session: null,
       user: null,
       children: [],
       selectedChildIndex: 0,
       _hasHydrated: false,
       isMobileMenuOpen: false,
       
-      login: (userData, childrenData) => set({ 
-        user: userData, 
-        children: childrenData,
-        selectedChildIndex: 0 // 로그인 시 기본적으로 첫 번째 자녀 선택
+      setSession: (session) => set({ 
+        session,
+        user: session?.user ?? null 
+      }),
+
+      setChildren: (childrenData) => set({
+        children: childrenData
       }),
       
       logout: () => set({ 
+        session: null,
         user: null, 
         children: [], 
         selectedChildIndex: 0 
@@ -66,6 +68,13 @@ export const useAuthStore = create<AuthState>()(
     {
       name: 'school-auth-storage',
       storage: createJSONStorage(() => localStorage),
+      // 세션과 유저 정보는 Supabase Auth에서 직접 관리하므로 
+      // 로컬스토리지에는 자녀 정보와 설정값만 유지하는 것이 보안상 유리할 수 있으나,
+      // 일단 기존 UI 호환성을 위해 유지는 하되 Supabase 세션 리스너가 주 제어권을 가집니다.
+      partialize: (state) => ({ 
+        children: state.children, 
+        selectedChildIndex: state.selectedChildIndex 
+      }),
       onRehydrateStorage: (state) => {
         return () => {
           state.setHasHydrated(true);

@@ -76,8 +76,8 @@ export default function Home() {
     return (
       <div className="min-h-screen flex items-center justify-center bg-[var(--background)]">
         <div className="flex flex-col items-center gap-4">
-          <Loader2 className="w-12 h-12 text-blue-500 animate-spin" />
-          <p className="text-slate-500 font-medium animate-pulse">잠시만 기다려주세요...</p>
+          <Loader2 className="w-12 h-12 text-[var(--primary)] animate-spin" />
+          <p className="text-stone-500 font-medium animate-pulse">잠시만 기다려주세요...</p>
         </div>
       </div>
     );
@@ -95,7 +95,7 @@ export default function Home() {
           <p className="text-slate-500 dark:text-slate-400 mt-1">오늘의 스케줄과 주간 시간표, 과제를 확인하세요.</p>
         </div>
         <div className="flex justify-start lg:justify-end">
-          <div className="text-sm font-bold px-5 py-2.5 bg-blue-100 dark:bg-blue-500/20 text-blue-700 dark:text-blue-300 rounded-xl shadow-sm border border-blue-200 dark:border-blue-500/30 whitespace-nowrap">
+          <div className="text-sm font-bold px-5 py-2.5 bg-orange-100 dark:bg-orange-500/20 text-orange-700 dark:text-orange-300 rounded-xl shadow-sm border border-orange-200 dark:border-orange-500/30 whitespace-nowrap">
             {now.toLocaleDateString('ko-KR', { month: 'long', day: 'numeric', weekday: 'long' })}
           </div>
         </div>
@@ -105,13 +105,13 @@ export default function Home() {
         {/* 주간 시간표 */}
         <div className="lg:col-span-3 glass rounded-2xl p-6 flex flex-col relative">
           <h2 className="text-lg font-bold mb-4 flex items-center">
-            <span className="w-2 h-6 bg-blue-500 rounded-full mr-3 inline-block"></span>
+            <span className="w-2 h-6 bg-[var(--primary)] rounded-full mr-3 inline-block"></span>
             주간 시간표 {activeChild ? `(${activeChild.baby_school} ${activeChild.baby_grade}-${activeChild.baby_class})` : ''}
           </h2>
           <div className="flex-1 relative">
             {isLoading ? (
-              <div className="absolute inset-0 flex items-center justify-center bg-white/50 dark:bg-slate-900/50 rounded-xl z-10 backdrop-blur-sm">
-                <Loader2 className="w-8 h-8 text-blue-500 animate-spin" />
+              <div className="absolute inset-0 flex items-center justify-center bg-white/50 dark:bg-stone-900/50 rounded-xl z-10 backdrop-blur-sm">
+                <Loader2 className="w-8 h-8 text-[var(--primary)] animate-spin" />
               </div>
             ) : weekSchedules.length > 0 ? (
               <WeeklySchedule schedules={weekSchedules} />
@@ -125,15 +125,15 @@ export default function Home() {
 
         {/* 사이드 위젯 그룹 */}
         <div className="flex flex-col space-y-6">
-          <div className="glass rounded-2xl p-6 h-[480px] flex flex-col relative overflow-hidden transition-all duration-300 hover:shadow-lg">
+          <div className="glass rounded-2xl p-6 min-h-[120px] max-h-[480px] flex flex-col relative overflow-hidden transition-all duration-300 hover:shadow-lg">
             <h2 className="text-lg font-bold mb-4 flex items-center shrink-0">
-              <span className="w-2 h-6 bg-emerald-500 rounded-full mr-3 inline-block"></span>
+              <span className="w-2 h-6 bg-orange-500 rounded-full mr-3 inline-block"></span>
               오늘의 수업
             </h2>
             <div className="flex-1 overflow-y-auto custom-scrollbar pr-2 -mr-2">
               {isLoading ? (
                  <div className="absolute inset-0 flex items-center justify-center">
-                   <Loader2 className="w-6 h-6 text-emerald-500 animate-spin" />
+                   <Loader2 className="w-6 h-6 text-orange-500 animate-spin" />
                  </div>
               ) : (
                 <TodaySchedule schedules={weekSchedules} dayOfWeek={todayDayOfWeek} />
@@ -141,10 +141,10 @@ export default function Home() {
             </div>
           </div>
 
-          <div className="glass rounded-2xl p-6 h-[480px] flex flex-col relative overflow-hidden transition-all duration-300 hover:shadow-lg">
+          <div className="glass rounded-2xl p-6 min-h-[120px] max-h-[480px] flex flex-col relative overflow-hidden transition-all duration-300 hover:shadow-lg">
             <h2 className="text-lg font-bold mb-4 flex items-center shrink-0">
-              <span className="w-2 h-6 bg-purple-500 rounded-full mr-3 inline-block"></span>
-              해야 할 과제
+              <span className="w-2 h-6 bg-amber-500 rounded-full mr-3 inline-block"></span>
+              해야 할 숙제
             </h2>
             <div className="flex-1 overflow-y-auto custom-scrollbar pr-2 -mr-2">
               <TaskBoard />

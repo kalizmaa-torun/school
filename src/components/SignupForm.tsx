@@ -147,34 +147,63 @@ export default function SignupForm() {
 
     setIsLoading(true);
     try {
-      // 1. school_user 테이블에 사용자 정보 삽입
+      // 1. Supabase Auth로 회원가입 및 세션 생성
+      // 내부적으로만 이메일 형식을 사용하고, 사용자는 아이디만 사용함
+      // 유효한 도메인 형식(.com 등)이어야 Supabase 유효성 검사를 통과함
+      const internalEmail = `${formData.username.trim()}@schoolboard.com`;
+      const { data: authData, error: authError } = await supabase.auth.signUp({
+        email: internalEmail,
+        password: formData.password,
+        options: {
+          data: {
+            user_name: formData.parentName,
+            login_id: formData.username.trim(), // 원본 아이디도 메타데이터에 저장
+          }
+        }
+      });
+
+      if (authError) {
+        console.error('Auth signup error details:', authError);
+        // Supabase 에러 메시지를 더 구체적으로 표시
+        if (authError.message.includes('already registered')) {
+          setErrorMsg('이미 사용 중인 아이디/이메일입니다.');
+        } else if (authError.message.includes('rate limit exceeded')) {
+          setErrorMsg('가입 요청이 너무 많습니다. 잠시 후(약 1시간) 다시 시도하거나, Supabase 설정에서 이메일 제한을 해제해주세요.');
+        } else if (authError.message.includes('Password should be')) {
+          setErrorMsg('비밀번호는 최소 6자 이상이어야 합니다.');
+        } else if (authError.status === 400) {
+          setErrorMsg(`가입 실패: ${authError.message} (아이디가 이메일 형식이 아닐 수 있습니다)`);
+        } else {
+          setErrorMsg(`인증 오류: ${authError.message}`);
+        }
+        setIsLoading(false);
+        return;
+      }
+
+      // 2. school_user 테이블에 사용자 정보 먼저 저장 (자녀 정보의 parents_id 참조용)
       const { error: userError } = await supabase
         .from('school_user')
-        .insert({
-          id: formData.username,
+        .upsert({
+          id: formData.username.trim(),
           password: formData.password,
           user_name: formData.parentName,
         });
 
       if (userError) {
         console.error('User insert error:', userError);
-        // 이미 존재하는 아이디 처리 등
-        if (userError.code === '23505') {
-          setErrorMsg('이미 존재하는 아이디입니다.');
-        } else {
-          setErrorMsg('회원 정보 저장 중 오류가 발생했습니다.');
-        }
+        setErrorMsg(`회원 정보 저장 중 오류: ${userError.message}`);
         setIsLoading(false);
         return;
       }
 
+      // 3. 자녀 정보 저장
       const babyInsertData = children.map(child => ({
         baby_name: child.name,
         baby_grade: child.grade,
         baby_class: child.classNumber,
         baby_office: child.officeOfEducation,
         baby_school: child.schoolName,
-        parents_id: formData.username,
+        parents_id: formData.username.trim(),
       }));
 
       const { error: babyError } = await supabase
@@ -183,7 +212,7 @@ export default function SignupForm() {
 
       if (babyError) {
         console.error('Baby insert error:', babyError);
-        setErrorMsg('자녀 정보 저장 중 오류가 발생했습니다.');
+        setErrorMsg(`자녀 정보 저장 중 오류: ${babyError.message}`);
         setIsLoading(false);
         return;
       }
@@ -201,10 +230,10 @@ export default function SignupForm() {
   return (
     <div className="w-full max-w-2xl mx-auto p-8 glass rounded-3xl shadow-xl">
       <div className="text-center mb-8">
-        <h1 className="text-3xl font-bold bg-linear-to-r from-blue-600 to-indigo-600 bg-clip-text text-transparent">
+        <h1 className="text-3xl font-bold bg-linear-to-r from-[var(--primary)] to-amber-600 bg-clip-text text-transparent">
           스쿨 보드 회원가입
         </h1>
-        <p className="text-slate-500 dark:text-slate-400 mt-2">
+        <p className="text-stone-500 dark:text-stone-400 mt-2">
           학부모 및 자녀 정보를 입력해주세요.
         </p>
       </div>
@@ -213,7 +242,7 @@ export default function SignupForm() {
         {/* 기본 정보 */}
         <div className="space-y-4">
           <h2 className="text-xl font-semibold flex items-center mb-4">
-            <span className="w-1.5 h-6 bg-blue-500 rounded-full mr-2 inline-block"></span>
+            <span className="w-1.5 h-6 bg-[var(--primary)] rounded-full mr-2 inline-block"></span>
             기본 정보
           </h2>
           
@@ -226,7 +255,7 @@ export default function SignupForm() {
                 required
                 value={formData.username}
                 onChange={handleInputChange}
-                className="w-full px-4 py-3 rounded-xl border border-slate-200 dark:border-slate-700 bg-white/50 dark:bg-slate-800/50 focus:ring-2 focus:ring-blue-500 focus:outline-none transition-all"
+                className="w-full px-4 py-3 rounded-xl border border-stone-200 dark:border-stone-700 bg-white/50 dark:bg-stone-800/50 focus:ring-2 focus:ring-[var(--primary)] focus:outline-none transition-all"
                 placeholder="아이디를 입력하세요"
               />
             </div>
@@ -238,7 +267,7 @@ export default function SignupForm() {
                 required
                 value={formData.parentName}
                 onChange={handleInputChange}
-                className="w-full px-4 py-3 rounded-xl border border-slate-200 dark:border-slate-700 bg-white/50 dark:bg-slate-800/50 focus:ring-2 focus:ring-blue-500 focus:outline-none transition-all"
+                className="w-full px-4 py-3 rounded-xl border border-stone-200 dark:border-stone-700 bg-white/50 dark:bg-stone-800/50 focus:ring-2 focus:ring-[var(--primary)] focus:outline-none transition-all"
                 placeholder="홍길동"
               />
             </div>
@@ -253,7 +282,7 @@ export default function SignupForm() {
                 required
                 value={formData.password}
                 onChange={handleInputChange}
-                className="w-full px-4 py-3 rounded-xl border border-slate-200 dark:border-slate-700 bg-white/50 dark:bg-slate-800/50 focus:ring-2 focus:ring-blue-500 focus:outline-none transition-all"
+                className="w-full px-4 py-3 rounded-xl border border-stone-200 dark:border-stone-700 bg-white/50 dark:bg-stone-800/50 focus:ring-2 focus:ring-[var(--primary)] focus:outline-none transition-all"
                 placeholder="비밀번호"
               />
             </div>
@@ -265,7 +294,7 @@ export default function SignupForm() {
                 required
                 value={formData.confirmPassword}
                 onChange={handleInputChange}
-                className="w-full px-4 py-3 rounded-xl border border-slate-200 dark:border-slate-700 bg-white/50 dark:bg-slate-800/50 focus:ring-2 focus:ring-blue-500 focus:outline-none transition-all"
+                className="w-full px-4 py-3 rounded-xl border border-stone-200 dark:border-stone-700 bg-white/50 dark:bg-stone-800/50 focus:ring-2 focus:ring-[var(--primary)] focus:outline-none transition-all"
                 placeholder="비밀번호 확인"
               />
             </div>
@@ -278,13 +307,13 @@ export default function SignupForm() {
         <div className="space-y-6">
           <div className="flex justify-between items-center mb-4">
             <h2 className="text-xl font-semibold flex items-center">
-              <span className="w-1.5 h-6 bg-emerald-500 rounded-full mr-2 inline-block"></span>
+              <span className="w-1.5 h-6 bg-orange-500 rounded-full mr-2 inline-block"></span>
               자녀 정보 등록
             </h2>
             <button
               type="button"
               onClick={addChild}
-              className="flex items-center text-sm px-3 py-1.5 bg-emerald-50 text-emerald-600 dark:bg-emerald-500/10 dark:text-emerald-400 rounded-lg hover:bg-emerald-100 dark:hover:bg-emerald-500/20 transition-colors"
+              className="flex items-center text-sm px-3 py-1.5 bg-orange-50 text-orange-600 dark:bg-orange-500/10 dark:text-orange-400 rounded-lg hover:bg-orange-100 dark:hover:bg-orange-500/20 transition-colors"
             >
               <Plus className="w-4 h-4 mr-1" />
               자녀 추가
@@ -316,7 +345,9 @@ export default function SignupForm() {
                       required
                       value={child.name}
                       onChange={(e) => handleChildChange(child.id, 'name', e.target.value)}
-                      className="w-full px-3 py-2 text-sm rounded-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 focus:ring-2 focus:ring-emerald-500 focus:outline-none transition-all"
+                        className={`flex-1 min-w-0 px-3 py-2 text-sm rounded-lg border bg-white dark:bg-stone-900 focus:ring-2 focus:ring-orange-500 focus:outline-none transition-all ${
+                          child.isVerified ? 'border-orange-500 shadow-[0_0_0_2px_rgba(249,115,22,0.2)]' : 'border-stone-200 dark:border-stone-700'
+                        }`}
                       placeholder="이름"
                     />
                   </div>
@@ -329,7 +360,9 @@ export default function SignupForm() {
                     <select
                       value={child.grade}
                       onChange={(e) => handleChildChange(child.id, 'grade', e.target.value)}
-                      className="w-full px-3 py-2 text-sm rounded-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 focus:ring-2 focus:ring-emerald-500 focus:outline-none transition-all"
+                        className={`flex-1 min-w-0 px-3 py-2 text-sm rounded-lg border bg-white dark:bg-stone-900 focus:ring-2 focus:ring-orange-500 focus:outline-none transition-all ${
+                          child.isVerified ? 'border-orange-500 shadow-[0_0_0_2px_rgba(249,115,22,0.2)]' : 'border-stone-200 dark:border-stone-700'
+                        }`}
                     >
                       {[1, 2, 3, 4, 5, 6].map(g => (
                         <option key={g} value={g}>{g}학년</option>
@@ -342,7 +375,9 @@ export default function SignupForm() {
                     <select
                       value={child.classNumber}
                       onChange={(e) => handleChildChange(child.id, 'classNumber', e.target.value)}
-                      className="w-full px-3 py-2 text-sm rounded-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 focus:ring-2 focus:ring-emerald-500 focus:outline-none transition-all"
+                        className={`flex-1 min-w-0 px-3 py-2 text-sm rounded-lg border bg-white dark:bg-stone-900 focus:ring-2 focus:ring-orange-500 focus:outline-none transition-all ${
+                          child.isVerified ? 'border-orange-500 shadow-[0_0_0_2px_rgba(249,115,22,0.2)]' : 'border-stone-200 dark:border-stone-700'
+                        }`}
                     >
                       {Array.from({ length: 15 }, (_, i) => i + 1).map(c => (
                         <option key={c} value={c}>{c}반</option>
@@ -358,7 +393,9 @@ export default function SignupForm() {
                     <select
                       value={child.officeOfEducation}
                       onChange={(e) => handleChildChange(child.id, 'officeOfEducation', e.target.value)}
-                      className="w-full px-3 py-2 text-sm rounded-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 focus:ring-2 focus:ring-emerald-500 focus:outline-none transition-all"
+                        className={`flex-1 min-w-0 px-3 py-2 text-sm rounded-lg border bg-white dark:bg-stone-900 focus:ring-2 focus:ring-orange-500 focus:outline-none transition-all ${
+                          child.isVerified ? 'border-orange-500 shadow-[0_0_0_2px_rgba(249,115,22,0.2)]' : 'border-stone-200 dark:border-stone-700'
+                        }`}
                     >
                       {Object.keys(OFFICE_CODES).map(office => (
                         <option key={office} value={office}>{office}</option>
@@ -417,7 +454,7 @@ export default function SignupForm() {
         <div className="pt-4">
           <button
             type="submit"
-            className="w-full py-4 bg-linear-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white rounded-xl font-bold shadow-lg shadow-blue-500/25 transition-all active:scale-[0.98] disabled:opacity-70"
+            className="w-full py-4 bg-linear-to-r from-[var(--primary)] to-amber-600 hover:from-amber-600 hover:to-[var(--primary)] text-white rounded-xl font-bold shadow-lg shadow-[var(--primary)]/25 transition-all active:scale-[0.98] disabled:opacity-70"
             disabled={isLoading}
           >
             가입하기

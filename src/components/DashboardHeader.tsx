@@ -1,18 +1,24 @@
 "use client";
 
 import { Bell, Search, Menu, ChevronDown, LogOut } from "lucide-react";
-import { useAuthStore } from "@/store/authStore";
+import { useAuthStore, ChildData } from "@/store/authStore";
 import { useState, useRef, useEffect } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
+import { supabase } from "@/lib/supabaseClient";
 
 export default function DashboardHeader() {
-  const { user, children, selectedChildIndex, setSelectedChildIndex, logout, setMobileMenuOpen, isMobileMenuOpen } = useAuthStore();
+  const { user, children, selectedChildIndex, setSelectedChildIndex, setMobileMenuOpen, isMobileMenuOpen } = useAuthStore();
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
   const router = useRouter();
 
   const activeChild = children[selectedChildIndex];
+
+  // Supabase Auth 유저 메타데이터에서 이름 가져오기
+  const userMetadata = user?.user_metadata;
+  const userName = userMetadata?.user_name || userMetadata?.login_id || "사용자";
+  const loginId = userMetadata?.login_id || user?.email?.split('@')[0] || "";
 
   // 드롭다운 외부 클릭 시 닫기
   useEffect(() => {
@@ -25,8 +31,8 @@ export default function DashboardHeader() {
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, []);
 
-  const handleLogout = () => {
-    logout();
+  const handleLogout = async () => {
+    await supabase.auth.signOut();
     router.push('/login');
   };
 
@@ -60,7 +66,7 @@ export default function DashboardHeader() {
             <div className="relative flex items-center gap-3" ref={dropdownRef}>
               <div className="hidden sm:block text-right cursor-pointer group" onClick={() => setIsDropdownOpen(!isDropdownOpen)}>
                 <p className="text-sm font-semibold text-[var(--foreground)] group-hover:text-blue-600 transition-colors flex items-center justify-end">
-                  {user.user_name} 학부모님 <ChevronDown size={14} className="ml-1 text-slate-400" />
+                  {userName} 학부모님 <ChevronDown size={14} className="ml-1 text-slate-400" />
                 </p>
                 {activeChild ? (
                   <p className="text-xs text-slate-500">
@@ -75,7 +81,7 @@ export default function DashboardHeader() {
                 className="w-9 h-9 rounded-full bg-linear-to-tr from-blue-500 to-indigo-500 flex items-center justify-center shadow-md cursor-pointer border-2 border-transparent hover:border-blue-400 transition-all"
                 onClick={() => setIsDropdownOpen(!isDropdownOpen)}
               >
-                <span className="text-white text-sm font-bold">{user.user_name.charAt(0)}</span>
+                <span className="text-white text-sm font-bold">{userName.charAt(0)}</span>
               </div>
 
               {/* 자녀 선택 드롭다운 */}
@@ -84,7 +90,7 @@ export default function DashboardHeader() {
                   <div className="px-4 py-2 bg-slate-50 dark:bg-slate-800/50 border-b border-slate-100 dark:border-slate-700">
                     <p className="text-xs font-semibold text-slate-500 dark:text-slate-400">자녀 선택</p>
                   </div>
-                  {children.map((child, idx) => (
+                  {children.map((child: ChildData, idx: number) => (
                     <button
                       key={idx}
                       onClick={() => {

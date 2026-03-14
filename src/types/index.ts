@@ -23,6 +23,19 @@ export interface Task {
   priority: TaskPriority;
 }
 
+export interface Homework {
+  id: string;
+  user_id: string;
+  child_id: number;
+  title: string;
+  subject: string;
+  description?: string;
+  due_date: string;
+  status: TaskStatus;
+  priority: TaskPriority;
+  created_at?: string;
+}
+
 // NEIS 나이스 시간표 Open API 응답 타입 정의
 export interface NeisTimetableRow {
   ATPT_OFCDC_SC_CODE: string;
@@ -105,4 +118,23 @@ export interface MealData {
   menu: string[];       // ["보리밥", "된장국", ...]
   kcal: string;         // "650.5 kcal"
   type: string;         // "중식"
+}
+
+export interface Post {
+  id: string;
+  author_id: string;
+  author_name: string;
+  content: string;
+  likes_count: number;
+  comments_count: number;
+  created_at: string;
+}
+
+export interface Comment {
+  id: string;
+  post_id: string;
+  author_id: string;
+  author_name: string;
+  content: string;
+  created_at: string;
 }
