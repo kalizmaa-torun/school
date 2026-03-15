@@ -27,7 +27,7 @@ function getWeekDateRange(weekOffset: number = 0) {
 
 export default function Home() {
   const router = useRouter();
-  const { user, children, selectedChildIndex, _hasHydrated } = useAuthStore();
+  const { user, children, selectedChildIndex, _hasHydrated, isAuthLoading } = useAuthStore();
   const [weekSchedules, setWeekSchedules] = useState<ClassSchedule[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [weekOffset, setWeekOffset] = useState(0);
@@ -35,10 +35,10 @@ export default function Home() {
   const activeChild = children[selectedChildIndex];
 
   useEffect(() => {
-    // 하이드레이션 완료 전에는 아무것도 하지 않음
-    if (!_hasHydrated) return;
+    // 하이드레이션 및 인증 상태 확인 전에는 아무것도 하지 않음
+    if (!_hasHydrated || isAuthLoading) return;
 
-    // 마운트 후 유저가 없으면 로그인 페이지로 이동
+    // 인증 확인 완료 후 유저가 없으면 로그인 페이지로 이동
     if (user === null) {
       router.push('/login');
       return;

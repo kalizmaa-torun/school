@@ -17,6 +17,7 @@ export interface ChildData {
 interface AuthState {
   session: Session | null;
   user: User | null;
+  isAuthLoading: boolean; // 추가
   children: ChildData[];
   selectedChildIndex: number;
   _hasHydrated: boolean;
@@ -34,6 +35,7 @@ export const useAuthStore = create<AuthState>()(
     (set) => ({
       session: null,
       user: null,
+      isAuthLoading: true, // 초기값 true
       children: [],
       selectedChildIndex: 0,
       _hasHydrated: false,
@@ -41,7 +43,8 @@ export const useAuthStore = create<AuthState>()(
       
       setSession: (session) => set({ 
         session,
-        user: session?.user ?? null 
+        user: session?.user ?? null,
+        isAuthLoading: false // 세션 설정 완료 시 false
       }),
 
       setChildren: (childrenData) => set({
