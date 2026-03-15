@@ -4,7 +4,7 @@ import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import { 
   School,
-  LayoutDashboard, 
+  Calendar, 
   Utensils, 
   BookOpen, 
   Users,
@@ -24,7 +24,7 @@ export default function Sidebar() {
   const isAdmin = currentUserId === "mohani7";
 
   const navItems = [
-    { name: "대시보드", href: "/", icon: LayoutDashboard },
+    { name: "수업시간표", href: "/", icon: Calendar },
     { name: "급식메뉴", href: "/meals", icon: Utensils },
     { name: "숙제관리", href: "/homework", icon: BookOpen },
     { name: "커뮤니티", href: "/community", icon: Users },

@@ -45,14 +45,15 @@ export default function DashboardHeader() {
         >
           <Menu size={24} />
         </button>
-        <div className="relative hidden md:block">
-          <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" size={18} />
-          <input 
-            type="text" 
-            placeholder="검색어 입력..." 
-            className="pl-10 pr-4 py-2 w-64 rounded-full bg-[var(--surface-hover)] border-none text-sm text-[var(--foreground)] focus:outline-none focus:ring-2 focus:ring-[var(--primary)] transition-shadow"
-          />
-        </div>
+        {activeChild && (
+          <div className="hidden md:flex items-center gap-2 px-4 py-1.5 bg-stone-100 dark:bg-stone-800 rounded-xl border border-stone-200 dark:border-stone-700">
+            <span className="text-sm font-bold text-[var(--primary)]">{activeChild.baby_school}</span>
+            <span className="w-1 h-3 bg-stone-300 dark:bg-stone-600 rounded-full" />
+            <span className="text-sm font-medium text-stone-600 dark:text-stone-400">
+              {activeChild.baby_grade}학년 {activeChild.baby_class}반
+            </span>
+          </div>
+        )}
       </div>
 
       <div className="flex items-center space-x-4">
