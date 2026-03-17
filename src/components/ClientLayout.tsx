@@ -6,6 +6,8 @@ import Sidebar from "@/components/Sidebar";
 import DashboardHeader from "@/components/DashboardHeader";
 import { supabase } from "@/lib/supabaseClient";
 import { useAuthStore } from "@/store/authStore";
+import { useRouter } from "next/navigation";
+import { Loader2 } from "lucide-react";
 
 export default function ClientLayout({
   children,
@@ -13,7 +15,8 @@ export default function ClientLayout({
   children: React.ReactNode;
 }) {
   const pathname = usePathname();
-  const setSession = useAuthStore((state) => state.setSession);
+  const { setSession, user, _hasHydrated, isAuthLoading } = useAuthStore();
+  const router = useRouter();
 
   useEffect(() => {
     // 앱 로드 시 현재 세션 가져오기
@@ -32,13 +35,29 @@ export default function ClientLayout({
       subscription.unsubscribe();
     };
   }, [setSession]);
-  
-  // 로그인이나 회원가입 페이지에서는 사이드바와 헤더를 숨김
+
   const isAuthPage = pathname === "/login" || pathname === "/signup";
+
+  useEffect(() => {
+    if (!_hasHydrated || isAuthLoading) return;
+
+    if (!user && !isAuthPage) {
+      router.push("/login");
+    }
+  }, [_hasHydrated, isAuthLoading, user, isAuthPage, router]);
+
+  // 하이드레이션 완료 전이거나 인증 확인 중인 경우 로딩 표시 (배경이 깜빡이는 것 방지)
+  if (!_hasHydrated || isAuthLoading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-(--background)">
+        <Loader2 className="w-12 h-12 text-(--primary) animate-spin" />
+      </div>
+    );
+  }
 
   if (isAuthPage) {
     return (
-      <main className="min-h-screen bg-[var(--background)] flex items-center justify-center relative overflow-hidden">
+      <main className="min-h-screen bg-(--background) flex items-center justify-center relative overflow-hidden">
         {/* Auth pages background decoration */}
         <div className="absolute top-0 left-0 w-full h-full overflow-hidden -z-10 pointer-events-none">
           <div className="absolute top-[-10%] right-[-5%] w-[40%] h-[40%] rounded-full bg-blue-400/20 blur-[100px]" />

@@ -60,7 +60,7 @@ export default function Sidebar() {
         <div className="mr-3 w-8 h-8 flex items-center justify-center overflow-hidden rounded-lg">
           <img src="/school_logo.png" alt="School Logo" className="w-full h-full object-contain" />
         </div>
-        <h1 className="text-lg font-bold text-[var(--foreground)] tracking-tight">스쿨 보드</h1>
+        <h1 className="text-lg font-bold text-[var(--foreground)] tracking-tight mt-0.5">스쿨 보드</h1>
       </div>
 
       <nav className="flex-1 py-6 px-4 space-y-2">

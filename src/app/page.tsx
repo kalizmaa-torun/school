@@ -38,11 +38,8 @@ export default function Home() {
     // 하이드레이션 및 인증 상태 확인 전에는 아무것도 하지 않음
     if (!_hasHydrated || isAuthLoading) return;
 
-    // 인증 확인 완료 후 유저가 없으면 로그인 페이지로 이동
-    if (user === null) {
-      router.push('/login');
-      return;
-    }
+    // 인증 상태 확인
+    if (user === null) return;
 
     const fetchSchedule = async () => {
       setIsLoading(true);
@@ -72,13 +69,9 @@ export default function Home() {
     };
 
     fetchSchedule();
-  }, [_hasHydrated, user, activeChild, router, weekOffset]);
-
-  if (!_hasHydrated || user === null) {
-    return (
-      <div className="min-h-screen flex items-center justify-center bg-[var(--background)]">
+  }, [_hasHydrated, user, activeChild, router, weekOffs      <div className="min-h-screen flex items-center justify-center bg-(--background)">
         <div className="flex flex-col items-center gap-4">
-          <Loader2 className="w-12 h-12 text-[var(--primary)] animate-spin" />
+          <Loader2 className="w-12 h-12 text-(--primary) animate-spin" />
           <p className="text-stone-500 font-medium animate-pulse">잠시만 기다려주세요...</p>
         </div>
       </div>
@@ -96,7 +89,7 @@ export default function Home() {
     <div className="space-y-6">
       <div className="grid grid-cols-1 lg:grid-cols-4 gap-6 items-end">
         <div className="lg:col-span-3">
-          <h1 className="text-2xl font-bold text-[var(--foreground)] tracking-tight">안녕하세요, 반가워요 👋</h1>
+          <h1 className="text-2xl font-bold text-(--foreground) tracking-tight">안녕하세요, 반가워요 👋</h1>
           <p className="text-slate-500 dark:text-slate-400 mt-1">오늘의 수업과 주간 시간표, 숙제를 확인하세요.</p>
         </div>
         <div className="flex justify-start lg:justify-end">
@@ -111,7 +104,7 @@ export default function Home() {
         <div className="lg:col-span-3 glass rounded-2xl p-6 flex flex-col relative">
           <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-6">
             <h2 className="text-lg font-bold flex items-center shrink-0">
-              <span className="w-2 h-6 bg-[var(--primary)] rounded-full mr-3 inline-block"></span>
+              <span className="w-2 h-6 bg-(--primary) rounded-full mr-3 inline-block"></span>
               주간 시간표 {activeChild ? `(${activeChild.baby_school} ${activeChild.baby_grade}-${activeChild.baby_class})` : ''}
             </h2>
             
@@ -148,7 +141,11 @@ export default function Home() {
 
           <div className="flex-1 relative">
             {isLoading ? (
-              <div className="absolute inset-0 flex items-center justify-center bg-white/50 dark:bg-stone-900/50 rounded-xl z-10 backdrop-blur-sm">
+              <div className="absolute inset-0 flex items-center justify-center bg-white/50 dark:bg-stone-900/50 rounded-xl z-20 backdrop-blur-sm">
+                <Loader2 className="w-8 h-8 text-(--primary) animate-spin" />
+              </div>
+            ) : weekSchedules.length > 0 ? (
+one-900/50 rounded-xl z-10 backdrop-blur-sm">
                 <Loader2 className="w-8 h-8 text-[var(--primary)] animate-spin" />
               </div>
             ) : weekSchedules.length > 0 ? (
