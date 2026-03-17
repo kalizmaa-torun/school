@@ -57,8 +57,8 @@ export default function Sidebar() {
         ${isMobileMenuOpen ? 'translate-x-0' : '-translate-x-full'}
       `}>
       <div className="h-16 flex items-center px-6 border-b border-[var(--border)]">
-        <div className="w-8 h-8 rounded-lg bg-[var(--primary)] flex items-center justify-center mr-3 shadow-md shadow-[var(--primary)]/20">
-          <School size={18} className="text-white" />
+        <div className="mr-3 w-8 h-8 flex items-center justify-center overflow-hidden rounded-lg">
+          <img src="/school_logo.png" alt="School Logo" className="w-full h-full object-contain" />
         </div>
         <h1 className="text-lg font-bold text-[var(--foreground)] tracking-tight">스쿨 보드</h1>
       </div>
