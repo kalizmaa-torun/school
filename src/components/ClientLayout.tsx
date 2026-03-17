@@ -15,7 +15,7 @@ export default function ClientLayout({
   children: React.ReactNode;
 }) {
   const pathname = usePathname();
-  const { setSession, user, children, setChildren, _hasHydrated, isAuthLoading } = useAuthStore();
+  const { setSession, user, children: authChildren, setChildren, _hasHydrated, isAuthLoading } = useAuthStore();
   const router = useRouter();
 
   useEffect(() => {
@@ -38,7 +38,7 @@ export default function ClientLayout({
 
   // 세션이 있는데 자녀 정보가 없는 경우 (새로고침 등) 자녀 정보 재조회
   useEffect(() => {
-    if (user && children.length === 0) {
+    if (user && authChildren.length === 0) {
       const fetchChildren = async () => {
         const loginId = user.user_metadata?.login_id || user.email?.split('@')[0];
         if (!loginId) return;
@@ -54,7 +54,7 @@ export default function ClientLayout({
       };
       fetchChildren();
     }
-  }, [user, children.length, setChildren]);
+  }, [user, authChildren.length, setChildren]);
 
   const isAuthPage = pathname === "/login" || pathname === "/signup";
 
