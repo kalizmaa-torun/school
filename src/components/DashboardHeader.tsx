@@ -8,12 +8,12 @@ import { useRouter } from "next/navigation";
 import { supabase } from "@/lib/supabaseClient";
 
 export default function DashboardHeader() {
-  const { user, children, selectedChildIndex, setSelectedChildIndex, setMobileMenuOpen, isMobileMenuOpen } = useAuthStore();
+  const { user, children: authChildren, selectedChildIndex, setSelectedChildIndex, setMobileMenuOpen, isMobileMenuOpen } = useAuthStore();
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
   const router = useRouter();
 
-  const activeChild = children[selectedChildIndex];
+  const activeChild = authChildren[selectedChildIndex];
 
   // Supabase Auth 유저 메타데이터에서 이름 가져오기
   const userMetadata = user?.user_metadata;
@@ -48,7 +48,7 @@ export default function DashboardHeader() {
         </button>
         {activeChild && (
           <div className="hidden md:flex items-center gap-2 px-4 py-1.5 bg-stone-100 dark:bg-stone-800 rounded-xl border border-stone-200 dark:border-stone-700">
-            <span className="text-sm font-bold text-[var(--primary)]">{activeChild.baby_school}</span>
+            <span className="text-sm font-bold text-(--primary)">{activeChild.baby_school}</span>
             <span className="w-1 h-3 bg-stone-300 dark:bg-stone-600 rounded-full" />
             <span className="text-sm font-medium text-stone-600 dark:text-stone-400">
               {activeChild.baby_grade}학년 {activeChild.baby_class}반
@@ -87,12 +87,12 @@ export default function DashboardHeader() {
               </div>
 
               {/* 자녀 선택 드롭다운 */}
-              {isDropdownOpen && children.length > 0 && (
+              {isDropdownOpen && authChildren.length > 0 && (
                 <div className="absolute top-12 right-0 w-48 bg-white dark:bg-slate-800 rounded-xl shadow-lg border border-slate-200 dark:border-slate-700 overflow-hidden py-1 z-50">
                   <div className="px-4 py-2 bg-slate-50 dark:bg-slate-800/50 border-b border-slate-100 dark:border-slate-700">
                     <p className="text-xs font-semibold text-slate-500 dark:text-slate-400">자녀 선택</p>
                   </div>
-                  {children.map((child: ChildData, idx: number) => (
+                  {authChildren.map((child: ChildData, idx: number) => (
                     <button
                       key={idx}
                       onClick={() => {
