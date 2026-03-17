@@ -15,7 +15,7 @@ export default function ClientLayout({
   children: React.ReactNode;
 }) {
   const pathname = usePathname();
-  const { setSession, user, _hasHydrated, isAuthLoading } = useAuthStore();
+  const { setSession, user, children, setChildren, _hasHydrated, isAuthLoading } = useAuthStore();
   const router = useRouter();
 
   useEffect(() => {
@@ -36,6 +36,26 @@ export default function ClientLayout({
     };
   }, [setSession]);
 
+  // 세션이 있는데 자녀 정보가 없는 경우 (새로고침 등) 자녀 정보 재조회
+  useEffect(() => {
+    if (user && children.length === 0) {
+      const fetchChildren = async () => {
+        const loginId = user.user_metadata?.login_id || user.email?.split('@')[0];
+        if (!loginId) return;
+
+        const { data, error } = await supabase
+          .from('user_baby')
+          .select('*')
+          .eq('parents_id', loginId);
+
+        if (!error && data) {
+          setChildren(data as any[]);
+        }
+      };
+      fetchChildren();
+    }
+  }, [user, children.length, setChildren]);
+
   const isAuthPage = pathname === "/login" || pathname === "/signup";
 
   useEffect(() => {
@@ -53,6 +73,11 @@ export default function ClientLayout({
         <Loader2 className="w-12 h-12 text-(--primary) animate-spin" />
       </div>
     );
+  }
+
+  // 인증되지 않은 유저가 권한이 없는 페이지에 접근할 경우 아무것도 렌더링하지 않음 (useEffect에서 리다이렉트 처리)
+  if (!user && !isAuthPage) {
+    return null;
   }
 
   if (isAuthPage) {

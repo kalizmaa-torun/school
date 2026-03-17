@@ -12,6 +12,7 @@ import {
   LogOut 
 } from "lucide-react";
 import { useAuthStore } from "@/store/authStore";
+import { supabase } from "@/lib/supabaseClient";
 
 export default function Sidebar() {
   const pathname = usePathname();
@@ -35,7 +36,8 @@ export default function Sidebar() {
     navItems.push({ name: "관리자 메뉴", href: "/admin", icon: Settings });
   }
 
-  const handleLogout = () => {
+  const handleLogout = async () => {
+    await supabase.auth.signOut();
     logout();
     router.push('/login');
     setMobileMenuOpen(false);
