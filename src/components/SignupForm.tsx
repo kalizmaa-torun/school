@@ -337,20 +337,18 @@ export default function SignupForm() {
               
               <div className="space-y-4">
                 {/* Row 1: Name */}
-                <div className="grid grid-cols-2 gap-4">
-                  <div className="space-y-2">
-                    <label className="text-xs font-medium text-slate-600 dark:text-slate-400">자녀 이름</label>
-                    <input
-                      type="text"
-                      required
-                      value={child.name}
-                      onChange={(e) => handleChildChange(child.id, 'name', e.target.value)}
-                        className={`flex-1 min-w-0 px-3 py-2 text-sm rounded-lg border bg-white dark:bg-stone-900 focus:ring-2 focus:ring-orange-500 focus:outline-none transition-all ${
-                          child.isVerified ? 'border-orange-500 shadow-[0_0_0_2px_rgba(249,115,22,0.2)]' : 'border-stone-200 dark:border-stone-700'
-                        }`}
-                      placeholder="이름"
-                    />
-                  </div>
+                <div className="space-y-2">
+                  <label className="text-xs font-medium text-slate-600 dark:text-slate-400">자녀 이름</label>
+                  <input
+                    type="text"
+                    required
+                    value={child.name}
+                    onChange={(e) => handleChildChange(child.id, 'name', e.target.value)}
+                    className={`w-full px-4 py-3 text-sm rounded-xl border bg-white/50 dark:bg-stone-800/50 focus:ring-2 focus:ring-orange-500 focus:outline-none transition-all ${
+                      child.isVerified ? 'border-orange-500 shadow-[0_0_0_2px_rgba(249,115,22,0.2)]' : 'border-stone-200 dark:border-stone-700'
+                    }`}
+                    placeholder="자녀 이름을 입력하세요"
+                  />
                 </div>
                 
                 {/* Row 2: Grade and Class */}
@@ -360,9 +358,9 @@ export default function SignupForm() {
                     <select
                       value={child.grade}
                       onChange={(e) => handleChildChange(child.id, 'grade', e.target.value)}
-                        className={`flex-1 min-w-0 px-3 py-2 text-sm rounded-lg border bg-white dark:bg-stone-900 focus:ring-2 focus:ring-orange-500 focus:outline-none transition-all ${
-                          child.isVerified ? 'border-orange-500 shadow-[0_0_0_2px_rgba(249,115,22,0.2)]' : 'border-stone-200 dark:border-stone-700'
-                        }`}
+                      className={`w-full px-4 py-3 text-sm rounded-xl border bg-white/50 dark:bg-stone-800/50 focus:ring-2 focus:ring-orange-500 focus:outline-none transition-all appearance-none cursor-pointer ${
+                        child.isVerified ? 'border-orange-500 shadow-[0_0_0_2px_rgba(249,115,22,0.2)]' : 'border-stone-200 dark:border-stone-700'
+                      }`}
                     >
                       {[1, 2, 3, 4, 5, 6].map(g => (
                         <option key={g} value={g}>{g}학년</option>
@@ -375,9 +373,9 @@ export default function SignupForm() {
                     <select
                       value={child.classNumber}
                       onChange={(e) => handleChildChange(child.id, 'classNumber', e.target.value)}
-                        className={`flex-1 min-w-0 px-3 py-2 text-sm rounded-lg border bg-white dark:bg-stone-900 focus:ring-2 focus:ring-orange-500 focus:outline-none transition-all ${
-                          child.isVerified ? 'border-orange-500 shadow-[0_0_0_2px_rgba(249,115,22,0.2)]' : 'border-stone-200 dark:border-stone-700'
-                        }`}
+                      className={`w-full px-4 py-3 text-sm rounded-xl border bg-white/50 dark:bg-stone-800/50 focus:ring-2 focus:ring-orange-500 focus:outline-none transition-all appearance-none cursor-pointer ${
+                        child.isVerified ? 'border-orange-500 shadow-[0_0_0_2px_rgba(249,115,22,0.2)]' : 'border-stone-200 dark:border-stone-700'
+                      }`}
                     >
                       {Array.from({ length: 15 }, (_, i) => i + 1).map(c => (
                         <option key={c} value={c}>{c}반</option>
@@ -387,15 +385,15 @@ export default function SignupForm() {
                 </div>
 
                 {/* Row 3: Office and School */}
-                <div className="grid grid-cols-2 gap-4">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   <div className="space-y-2">
                     <label className="text-xs font-medium text-slate-600 dark:text-slate-400">시도교육청</label>
                     <select
                       value={child.officeOfEducation}
                       onChange={(e) => handleChildChange(child.id, 'officeOfEducation', e.target.value)}
-                        className={`flex-1 min-w-0 px-3 py-2 text-sm rounded-lg border bg-white dark:bg-stone-900 focus:ring-2 focus:ring-orange-500 focus:outline-none transition-all ${
-                          child.isVerified ? 'border-orange-500 shadow-[0_0_0_2px_rgba(249,115,22,0.2)]' : 'border-stone-200 dark:border-stone-700'
-                        }`}
+                      className={`w-full px-4 py-3 text-sm rounded-xl border bg-white/50 dark:bg-stone-800/50 focus:ring-2 focus:ring-orange-500 focus:outline-none transition-all appearance-none cursor-pointer ${
+                        child.isVerified ? 'border-orange-500 shadow-[0_0_0_2px_rgba(249,115,22,0.2)]' : 'border-stone-200 dark:border-stone-700'
+                      }`}
                     >
                       {Object.keys(OFFICE_CODES).map(office => (
                         <option key={office} value={office}>{office}</option>
@@ -411,8 +409,8 @@ export default function SignupForm() {
                         required
                         value={child.schoolName}
                         onChange={(e) => handleChildChange(child.id, 'schoolName', e.target.value)}
-                        className={`flex-1 min-w-0 px-3 py-2 text-sm rounded-lg border bg-white dark:bg-slate-900 focus:ring-2 focus:ring-emerald-500 focus:outline-none transition-all ${
-                          child.isVerified ? 'border-emerald-500 shadow-[0_0_0_2px_rgba(16,185,129,0.2)]' : 'border-slate-200 dark:border-slate-700'
+                        className={`flex-1 min-w-0 px-4 py-3 text-sm rounded-xl border bg-white/50 dark:bg-stone-800/50 focus:ring-2 focus:ring-emerald-500 focus:outline-none transition-all ${
+                          child.isVerified ? 'border-emerald-500 shadow-[0_0_0_2px_rgba(16,185,129,0.2)]' : 'border-stone-200 dark:border-stone-700'
                         }`}
                         placeholder="예: 서울초등학교"
                       />
@@ -420,22 +418,22 @@ export default function SignupForm() {
                         type="button"
                         onClick={() => verifySchool(child.id)}
                         disabled={isLoading || child.isVerified}
-                        className={`px-3 py-2 rounded-lg text-sm font-medium flex items-center justify-center min-w-[50px] sm:min-w-[70px] transition-all ${
+                        className={`px-4 py-3 rounded-xl text-sm font-bold flex items-center justify-center min-w-[70px] transition-all ${
                           child.isVerified 
                             ? 'bg-emerald-500 text-white cursor-default'
-                            : 'bg-blue-600 text-white hover:bg-blue-700'
+                            : 'bg-orange-500 text-white hover:bg-orange-600 shadow-md shadow-orange-500/20'
                         }`}
                       >
                         {child.isVerified ? (
-                          <CheckCircle2 className="w-4 h-4" />
+                          <CheckCircle2 className="w-5 h-5" />
                         ) : (
-                          <Search className="w-4 h-4" />
+                          <Search className="w-5 h-5" />
                         )}
                       </button>
                     </div>
                     {child.isVerified && (
-                      <p className="text-xs text-emerald-600 dark:text-emerald-400 flex items-center mt-1">
-                        <CheckCircle2 className="w-3 h-3 mr-1" /> 인증 완료
+                      <p className="text-xs text-emerald-600 dark:text-emerald-400 font-medium flex items-center mt-1 ml-1">
+                        <CheckCircle2 className="w-3.5 h-3.5 mr-1" /> 인증 완료
                       </p>
                     )}
                   </div>
