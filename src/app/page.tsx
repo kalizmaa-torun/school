@@ -38,7 +38,7 @@ export default function Home() {
     // 하이드레이션 및 인증 상태 확인 전에는 아무것도 하지 않음
     if (!_hasHydrated || isAuthLoading) return;
 
-    // 인증 상태 확인
+    // 인증 상태 확인 (비로그인 시 ClientLayout에서 리다이렉트하지만 세이프가드로 남김)
     if (user === null) return;
 
     const fetchSchedule = async () => {
@@ -69,13 +69,11 @@ export default function Home() {
     };
 
     fetchSchedule();
-  }, [_hasHydrated, user, activeChild, router, weekOffs      <div className="min-h-screen flex items-center justify-center bg-(--background)">
-        <div className="flex flex-col items-center gap-4">
-          <Loader2 className="w-12 h-12 text-(--primary) animate-spin" />
-          <p className="text-stone-500 font-medium animate-pulse">잠시만 기다려주세요...</p>
-        </div>
-      </div>
-    );
+  }, [_hasHydrated, user, activeChild, weekOffset]);
+
+  // ClientLayout에서 처리가 되지만, 하이드레이션 중일 때 빈 화면 방지
+  if (!_hasHydrated || user === null) {
+    return null; 
   }
 
   const days: DayOfWeek[] = ['일', '월', '화', '수', '목', '금', '토'] as any;
@@ -143,10 +141,6 @@ export default function Home() {
             {isLoading ? (
               <div className="absolute inset-0 flex items-center justify-center bg-white/50 dark:bg-stone-900/50 rounded-xl z-20 backdrop-blur-sm">
                 <Loader2 className="w-8 h-8 text-(--primary) animate-spin" />
-              </div>
-            ) : weekSchedules.length > 0 ? (
-one-900/50 rounded-xl z-10 backdrop-blur-sm">
-                <Loader2 className="w-8 h-8 text-[var(--primary)] animate-spin" />
               </div>
             ) : weekSchedules.length > 0 ? (
               <WeeklySchedule schedules={weekSchedules} />
