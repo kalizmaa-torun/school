@@ -17,8 +17,16 @@ import {
   HelpCircle,
   Clapperboard,
   Smile,
-  Handshake
+  Handshake,
+  Cloud,
+  Sun,
+  CloudRain,
+  Snowflake
 } from 'lucide-react';
+import { fetchWeeklyWeather, DailyWeather } from '@/lib/weatherApi';
+import { useState } from 'react';
+import { format, startOfWeek, addDays } from 'date-fns';
+import { ko } from 'date-fns/locale';
 
 const DAYS: DayOfWeek[] = ['월', '화', '수', '목', '금'];
 
@@ -65,6 +73,25 @@ interface WeeklyScheduleProps {
 }
 
 export default function WeeklySchedule({ schedules }: WeeklyScheduleProps) {
+  const [weatherData, setWeatherData] = useState<Record<string, DailyWeather>>({});
+
+  // 이번 주 월~금 날짜 계산 (YYYYMMDD 형식)
+  const weekDates = useMemo(() => {
+    const today = new Date();
+    // 0: 일, 1: 월 ...
+    // startOfWeek(today, { weekStartsOn: 1 }) -> 이번 주 월요일
+    const monday = startOfWeek(today, { weekStartsOn: 1 });
+    return DAYS.map((_, idx) => format(addDays(monday, idx), 'yyyyMMdd'));
+  }, []);
+
+  useEffect(() => {
+    const loadWeather = async () => {
+      const weather = await fetchWeeklyWeather(weekDates);
+      setWeatherData(weather);
+    };
+    loadWeather();
+  }, [weekDates]);
+
   const periods = useMemo(() => {
     const map = new Map();
     schedules.forEach(s => {
@@ -118,7 +145,7 @@ export default function WeeklySchedule({ schedules }: WeeklyScheduleProps) {
         {/* Header (Days) */}
         <div className="flex border-b border-[var(--border)] sticky top-0 bg-[var(--surface-inner)] z-30">
           <div className="w-20 border-r border-[var(--border)] bg-[var(--surface-inner)] flex-shrink-0 sticky left-0 z-40 shadow-[2px_0_5px_-2px_rgba(0,0,0,0.1)] dark:shadow-[2px_0_5px_-2px_rgba(0,0,0,0.3)]"></div>
-          {DAYS.map(day => {
+          {DAYS.map((day, idx) => {
             const isToday = day === todayKR;
             return (
               <div 
@@ -131,6 +158,11 @@ export default function WeeklySchedule({ schedules }: WeeklyScheduleProps) {
                 }`}
               >
                 {day}요일
+                {weatherData[weekDates[idx]] && (
+                  <span className="ml-1.5 opacity-80 inline-block transform scale-110" title={`기온: ${weatherData[weekDates[idx]].temp || '-'}°C`}>
+                    {weatherData[weekDates[idx]].icon}
+                  </span>
+                )}
               </div>
             );
           })}
