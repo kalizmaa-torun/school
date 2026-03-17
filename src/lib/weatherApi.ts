@@ -3,8 +3,7 @@
  * Fetches and parses weather observation data from KMA API Hub.
  */
 
-const AUTH_KEY = 'P8lN1gWIRAGJTdYFiPQB6A';
-const BASE_URL = 'https://apihub.kma.go.kr/api/typ01/url/kma_sfctm3.php';
+const BASE_URL = '/api/weather';
 
 export interface DailyWeather {
   date: string; // YYYYMMDD
@@ -14,13 +13,12 @@ export interface DailyWeather {
 
 /**
  * Maps KMA observation data to a weather icon.
- * Heuristic based on cloud amount (CA) and precipitation (RN).
- * CA: 0-2 (Clear), 3-5 (Partly Cloudy), 6-8 (Cloudy), 9-10 (Overcast)
  */
 export const mapWeatherToIcon = (cloudAmount: number, rain: number, snow: number, temp: number): string => {
   if (snow > 0) return '❄️';
   if (rain > 0) return '🌧️';
-  if (cloudAmount <= 2) return '☀️';
+  // cloudAmount is 0-10 or -9 (missing)
+  if (cloudAmount === -9 || cloudAmount === 0) return '☀️'; 
   if (cloudAmount <= 5) return '🌤️';
   if (cloudAmount <= 8) return '☁️';
   return '🌫️';
@@ -32,18 +30,18 @@ export const mapWeatherToIcon = (cloudAmount: number, rain: number, snow: number
 export async function fetchWeeklyWeather(dates: string[]): Promise<Record<string, DailyWeather>> {
   const result: Record<string, DailyWeather> = {};
   
-  // To minimize calls, we could fetch a range, but the user requested individual dates usually.
-  // For this implementation, we'll fetch the range of the current week.
   const sortedDates = [...dates].sort();
+  // KMA expects 12 digits: YYYYMMDDHHMM
   const tm1 = `${sortedDates[0]}0000`;
   const tm2 = `${sortedDates[sortedDates.length - 1]}2300`;
   
   try {
-    const response = await fetch(`${BASE_URL}?tm1=${tm1}&tm2=${tm2}&stn=108&help=0&authKey=${AUTH_KEY}`);
+    // Calling our internal API proxy
+    const response = await fetch(`${BASE_URL}?tm1=${tm1}&tm2=${tm2}&stn=108`);
+    if (!response.ok) throw new Error('API proxy returned error');
+    
     const text = await response.text();
     
-    // Parse the KMA text format
-    // Lines starting with # are comments. Data lines start with YYYYMMDDHHMM.
     const lines = text.split('\n');
     const dayData: Record<string, any> = {};
 
@@ -53,20 +51,21 @@ export async function fetchWeeklyWeather(dates: string[]): Promise<Record<string
       const parts = line.trim().split(/\s+/);
       if (parts.length < 15) continue;
 
-      const timestamp = parts[0]; // YYYYMMDDHHMM
+      const timestamp = parts[0]; 
       const date = timestamp.substring(0, 8);
       const hour = timestamp.substring(8, 10);
       
-      // We take the data around 12:00 (midday) as the representative weather for the day
-      if (hour === '12' || !dayData[date]) {
-        const temp = parseFloat(parts[11]); // TA
-        const cloud = parseFloat(parts[21]); // CA_TOT (or similar based on column research)
-        const rain = parseFloat(parts[15]); // RN
-        const snow = parseFloat(parts[19]); // SD_DAY or similar
-        
+      const temp = parseFloat(parts[11]);
+      const rain = parseFloat(parts[15]);
+      const snow = parseFloat(parts[19]);
+      const cloud = parts.length > 24 ? parseFloat(parts[24]) : -9;
+      
+      // 12:00 데이터를 우선적으로 사용하되, 없으면 가장 최신(마지막) 데이터를 사용
+      if (hour === '12' || !dayData[date] || parseInt(hour) > parseInt(dayData[date].hour)) {
         dayData[date] = {
+          hour,
           temp: parts[11],
-          cloud: cloud === -9 ? 0 : cloud,
+          cloud: cloud,
           rain: rain === -9 ? 0 : rain,
           snow: snow === -9 ? 0 : snow
         };
@@ -82,7 +81,6 @@ export async function fetchWeeklyWeather(dates: string[]): Promise<Record<string
           temp: data.temp
         };
       } else {
-        // Fallback for future dates or missing data
         result[date] = { date, icon: '❓' };
       }
     }
